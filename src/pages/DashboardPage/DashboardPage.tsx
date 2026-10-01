@@ -85,7 +85,7 @@ export default function DashboardPage() {
 
   return (
     <div className={styles.page}>
-      <NavBar />
+      <NavBar search={{ value: search, onChange: setSearch }} />
 
       <div className={styles.toolbar}>
         <button
@@ -106,8 +106,6 @@ export default function DashboardPage() {
           data-open={filtersOpen || undefined}
         >
           <FilterSidebar
-            search={search}
-            onSearchChange={setSearch}
             selectedTypes={selectedTypes}
             onToggleType={(type) => setSelectedTypes((prev) => toggleInSet(prev, type))}
             selectedStatuses={selectedStatuses}

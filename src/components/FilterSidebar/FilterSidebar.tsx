@@ -5,8 +5,6 @@ export type SortOption = "Newest" | "Oldest" | "Most pages" | "A-Z";
 export type StatusFilter = "Digitized" | "Processing" | "Queued";
 
 type FilterSidebarProps = {
-  search: string;
-  onSearchChange: (value: string) => void;
   selectedTypes: Set<DocType>;
   onToggleType: (type: DocType) => void;
   selectedStatuses: Set<StatusFilter>;
@@ -25,8 +23,6 @@ const STATUSES: { label: StatusFilter; tone: string }[] = [
 const SORT_OPTIONS: SortOption[] = ["Newest", "Oldest", "Most pages", "A-Z"];
 
 export default function FilterSidebar({
-  search,
-  onSearchChange,
   selectedTypes,
   onToggleType,
   selectedStatuses,
@@ -39,20 +35,6 @@ export default function FilterSidebar({
     <aside className={styles.sidebar} aria-label="Filter and sort">
       <h2 className={styles.heading}>Filter and Sort</h2>
       <div className={styles.rule} aria-hidden="true" />
-
-      <div className={styles.section}>
-        <label className={styles.label} htmlFor="record-search">
-          Search
-        </label>
-        <input
-          id="record-search"
-          type="search"
-          className={styles.search}
-          placeholder="Title or record ID"
-          value={search}
-          onChange={(event) => onSearchChange(event.target.value)}
-        />
-      </div>
 
       <fieldset className={styles.fieldset}>
         <legend className={styles.label}>Document type</legend>

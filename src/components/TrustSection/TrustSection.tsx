@@ -2,6 +2,9 @@ import InfoCard from "../InfoCard/InfoCard";
 import SectionIntro from "../SectionIntro/SectionIntro";
 import SectionPanel from "../SectionPanel/SectionPanel";
 import styles from "./TrustSection.module.css";
+import { ArchiveArt, ChartArt, TeamArt } from "../CardArt/CardArt";
+
+const ARTS = [<ArchiveArt key="a" />, <ChartArt key="c" />, <TeamArt key="t" />];
 
 const CARDS = [
   {
@@ -27,8 +30,8 @@ export default function TrustSection() {
         description="Papertrail helps ministries, firms, banks, and consultants turn messy paper into usable data that fits existing systems."
       />
       <div className={styles.grid}>
-        {CARDS.map((card) => (
-          <InfoCard key={card.title} {...card} />
+        {CARDS.map((card, i) => (
+          <InfoCard key={card.title} {...card} index={i} art={ARTS[i]} />
         ))}
       </div>
     </SectionPanel>

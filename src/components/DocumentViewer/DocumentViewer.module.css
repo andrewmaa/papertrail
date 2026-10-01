@@ -30,7 +30,8 @@
   align-items: center;
   gap: 14px;
   width: min(440px, 100%);
-  max-height: calc(100svh - 24px);
+  max-height: calc(100svh - 2 * clamp(12px, 2vw, 22px) - 44px);
+  min-height: 0;
   opacity: 0;
   transform: translateY(18px) scale(0.96);
   transition:
@@ -139,9 +140,10 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  flex: 0 1 auto;
   width: 100%;
-  max-height: calc(100svh - 120px);
-  padding: clamp(20px, 2.4vw, 28px);
+  min-height: 0;
+  padding: clamp(18px, 2.4vw, 28px);
   background-color: var(--color-paper);
   border: 2.5px solid var(--color-ink-strong);
   border-radius: 20px;
@@ -213,7 +215,8 @@
   max-height: calc(var(--field-height) * var(--visible-fields) + 4px);
   margin-top: 8px;
   padding-right: 4px;
-  overflow: auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .field {
@@ -380,25 +383,42 @@
   }
 }
 
-@media (max-width: 900px) {
-  .overlay {
-    align-items: flex-start;
-    padding-top: 16px;
-    overflow: auto;
+@media (max-height: 720px) {
+  .fields {
+    --field-height: 68px;
   }
 
+  .field {
+    padding-top: 12px;
+  }
+
+  .fieldValueRow {
+    margin-top: 3px;
+    padding: 4px 0;
+  }
+
+  .footer {
+    margin-top: 12px;
+    padding-top: 12px;
+  }
+
+  .editFooter {
+    margin-top: 8px;
+    padding-top: 8px;
+  }
+}
+
+@media (max-width: 900px) {
   .overlay[data-entered][data-notes] {
     padding-right: clamp(12px, 2vw, 22px);
   }
 
   .stage {
     width: min(100%, 400px);
-    max-height: none;
   }
 
   .sheet {
     transform: none;
-    max-height: none;
   }
 
   .toolbar {

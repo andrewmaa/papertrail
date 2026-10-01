@@ -1,10 +1,12 @@
 import { useEffect, useId, useRef, useState } from "react";
 import editIcon from "../../assets/icons/edit.svg";
 import notesIcon from "../../assets/icons/notes.svg";
+import originalIcon from "../../assets/icons/original.svg";
 import shareIcon from "../../assets/icons/share.svg";
 import { type Comment, type RecordDocument } from "../../data/records";
 import Button from "../Button/Button";
 import NotesPanel from "./NotesPanel";
+import OriginalScan from "./OriginalScan";
 import SharePanel from "./SharePanel";
 import styles from "./DocumentViewer.module.css";
 
@@ -31,6 +33,8 @@ export default function DocumentViewer({ record, onClose }: DocumentViewerProps)
   const [fields, setFields] = useState(record.fields);
   const [draft, setDraft] = useState(record.fields);
   const [editing, setEditing] = useState(false);
+  const [showOriginal, setShowOriginal] = useState(false);
+  const hasOriginal = record.status === "Digitized";
   const closingRef = useRef(false);
   const closeTimerRef = useRef<number>(undefined);
 
@@ -54,6 +58,7 @@ export default function DocumentViewer({ record, onClose }: DocumentViewerProps)
     setFields(record.fields);
     setDraft(record.fields);
     setEditing(false);
+    setShowOriginal(false);
     setNotesOpen(true);
     setShareOpen(false);
     const frame = requestAnimationFrame(() => setEntered(true));
@@ -137,6 +142,7 @@ export default function DocumentViewer({ record, onClose }: DocumentViewerProps)
             type="button"
             className={`${styles.tool} ${styles.toolActive}`}
             aria-pressed={editing}
+            disabled={showOriginal}
             onClick={editing ? cancelEditing : startEditing}
           >
             <img
@@ -149,6 +155,27 @@ export default function DocumentViewer({ record, onClose }: DocumentViewerProps)
             />
             Edit
           </button>
+          {hasOriginal ? (
+            <button
+              type="button"
+              className={`${styles.tool} ${styles.toolActive}`}
+              aria-pressed={showOriginal}
+              onClick={() => {
+                if (editing) cancelEditing();
+                setShowOriginal((open) => !open);
+              }}
+            >
+              <img
+                src={originalIcon}
+                alt=""
+                width={17.678}
+                height={17.678}
+                className={styles.notesIcon}
+                data-active={showOriginal || undefined}
+              />
+              Original
+            </button>
+          ) : null}
           <button
             type="button"
             className={`${styles.tool} ${styles.toolActive}`}
@@ -208,6 +235,10 @@ export default function DocumentViewer({ record, onClose }: DocumentViewerProps)
             </span>
           </header>
 
+          {showOriginal ? (
+            <OriginalScan key={record.id} record={record} />
+          ) : (
+          <>
           <div className={styles.fields} data-editing={editing || undefined}>
             {(editing ? draft : fields).map((field, index) => (
               <div key={index} className={styles.field}>
@@ -266,6 +297,8 @@ export default function DocumentViewer({ record, onClose }: DocumentViewerProps)
                 {extracted} of {extracted} fields extracted
               </p>
             </footer>
+          )}
+          </>
           )}
         </article>
       </div>

@@ -66,12 +66,28 @@
   color: var(--color-ink);
 }
 
-.upload {
+.actions {
+  display: flex;
   flex-shrink: 0;
-  height: clamp(44px, 5vh, 55px);
+  flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 10px;
-  padding: 0 clamp(18px, 1.8vw, 24px);
-  font-size: clamp(16px, 1.4vw, 20px);
+}
+
+.action {
+  height: clamp(44px, 5vh, 55px);
+  padding: 0 clamp(14px, 1.4vw, 20px);
+  font-size: clamp(14px, 1.2vw, 17px);
+  white-space: nowrap;
+}
+
+.action:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.upload {
+  gap: 10px;
 }
 
 .uploadPlus {
@@ -201,8 +217,16 @@
     flex-wrap: wrap;
   }
 
-  .upload {
+  .actions {
     width: 100%;
+  }
+
+  .action {
+    flex: 1 1 auto;
+  }
+
+  .upload {
+    flex-basis: 100%;
   }
 }
 

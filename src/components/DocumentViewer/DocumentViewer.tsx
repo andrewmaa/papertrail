@@ -1,5 +1,9 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { type Comment, type RecordDocument } from "../../data/records";
+import editIcon from "../../assets/icons/edit.svg";
+import notesIcon from "../../assets/icons/notes.svg";
+import originalIcon from "../../assets/icons/original.svg";
+import shareIcon from "../../assets/icons/share.svg";
 import Button from "../Button/Button";
 import NotesPanel from "./NotesPanel";
 import OriginalScan from "./OriginalScan";
@@ -86,6 +90,13 @@ export default function DocumentViewer({ record, onClose }: DocumentViewerProps)
 
   const extracted = fields.length;
 
+  const startEditing = () => {
+    setDraft(fields);
+    setEditing(true);
+    setNotesOpen(false);
+    setShareOpen(false);
+  };
+
   const cancelEditing = () => {
     setDraft(fields);
     setEditing(false);
@@ -129,6 +140,88 @@ export default function DocumentViewer({ record, onClose }: DocumentViewerProps)
         aria-labelledby={titleId}
         onClick={(event) => event.stopPropagation()}
       >
+        {isPending ? null : (
+          <div className={styles.toolbar} role="toolbar" aria-label="Record actions">
+            <button
+              type="button"
+              className={`${styles.tool} ${styles.toolActive}`}
+              aria-pressed={editing}
+              disabled={showOriginal}
+              onClick={editing ? cancelEditing : startEditing}
+            >
+              <img
+                src={editIcon}
+                alt=""
+                width={17.678}
+                height={17.678}
+                className={styles.notesIcon}
+                data-active={editing || undefined}
+              />
+              Edit
+            </button>
+            <button
+              type="button"
+              className={`${styles.tool} ${styles.toolActive}`}
+              aria-pressed={showOriginal}
+              onClick={() => {
+                if (editing) cancelEditing();
+                setShowOriginal((open) => !open);
+              }}
+            >
+              <img
+                src={originalIcon}
+                alt=""
+                width={17.678}
+                height={17.678}
+                className={styles.notesIcon}
+                data-active={showOriginal || undefined}
+              />
+              Original
+            </button>
+            <button
+              type="button"
+              className={`${styles.tool} ${styles.toolActive}`}
+              aria-pressed={shareOpen}
+              aria-expanded={shareOpen}
+              aria-controls={shareId}
+              onClick={() => {
+                setShareOpen((open) => !open);
+                setNotesOpen(false);
+              }}
+            >
+              <img
+                src={shareIcon}
+                alt=""
+                width={17.678}
+                height={17.678}
+                className={styles.notesIcon}
+                data-active={shareOpen || undefined}
+              />
+              Share
+            </button>
+            <button
+              type="button"
+              className={`${styles.tool} ${styles.toolActive}`}
+              aria-pressed={notesOpen}
+              onClick={() => {
+                setNotesOpen((open) => !open);
+                setShareOpen(false);
+              }}
+            >
+              <img
+                src={notesIcon}
+                alt=""
+                width={17.678}
+                height={17.678}
+                className={styles.notesIcon}
+                data-active={notesOpen || undefined}
+              />
+              Notes
+              <span className={styles.toolCount}>{totalNotes}</span>
+            </button>
+          </div>
+        )}
+
         <article className={styles.sheet}>
           <header className={styles.sheetHeader}>
             <div className={styles.sheetHeading}>

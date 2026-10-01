@@ -124,7 +124,7 @@ export default function DashboardPage() {
               <p className={styles.breadcrumb}>Archive / All records</p>
               <h1 className={styles.title}>Your filing cabinet, in the cloud.</h1>
             </div>
-            <Button variant="primary" className={styles.upload}>
+            <Button variant="primary" href="/upload" className={styles.upload}>
               <span className={styles.uploadPlus} aria-hidden="true">
                 +
               </span>

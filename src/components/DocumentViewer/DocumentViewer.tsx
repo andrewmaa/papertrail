@@ -158,6 +158,7 @@ export default function DocumentViewer({ record, onClose }: DocumentViewerProps)
             Edit
           </button>
           )}
+          {isPending && !showOriginal ? null : (
             <button
               type="button"
               className={`${styles.tool} ${styles.toolActive}`}
@@ -177,6 +178,7 @@ export default function DocumentViewer({ record, onClose }: DocumentViewerProps)
               />
               Original
             </button>
+          )}
           {isPending ? null : (
           <>
           <button

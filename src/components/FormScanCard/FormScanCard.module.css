@@ -9,6 +9,24 @@
   width: calc(412 * var(--u));
   height: calc(403 * var(--u));
   max-width: 100%;
+  animation: stack-float 5.5s ease-in-out 1.1s infinite;
+}
+
+@keyframes stack-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stack {
+    animation: none;
+  }
 }
 
 .backSheet {

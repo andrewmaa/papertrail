@@ -26,6 +26,18 @@
   height: 152px;
   border-radius: 76px;
   background-color: var(--color-success-tint);
+  animation: orb-breathe 4.5s ease-in-out 1.4s infinite;
+}
+
+@keyframes orb-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.035);
+  }
 }
 
 .disc {
@@ -58,6 +70,12 @@
   line-height: 1.55;
   letter-spacing: var(--tracking);
   color: var(--color-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orb {
+    animation: none;
+  }
 }
 
 @media (max-width: 700px) {

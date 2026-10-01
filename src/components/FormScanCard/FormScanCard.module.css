@@ -89,7 +89,6 @@
   gap: calc(12 * var(--u));
   margin-top: auto;
   padding-top: calc(10 * var(--u));
-  border-top: calc(1 * var(--u)) dashed var(--color-rule);
 }
 
 .dot {

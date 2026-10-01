@@ -5,6 +5,9 @@
   display: grid;
   place-items: center;
   padding: clamp(12px, 2vw, 22px);
+  padding-bottom: 48px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   background-color: rgba(42, 42, 42, 0);
   backdrop-filter: blur(0);
   transition:
@@ -30,8 +33,7 @@
   align-items: center;
   gap: 14px;
   width: min(440px, 100%);
-  max-height: calc(100svh - 2 * clamp(12px, 2vw, 22px) - 44px);
-  min-height: 0;
+  margin: auto;
   opacity: 0;
   transform: translateY(18px) scale(0.96);
   transition:
@@ -140,9 +142,8 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  flex: 0 1 auto;
+  flex: none;
   width: 100%;
-  min-height: 0;
   padding: clamp(18px, 2.4vw, 28px);
   background-color: var(--color-paper);
   border: 2.5px solid var(--color-ink-strong);
@@ -210,8 +211,7 @@
   --visible-fields: 6;
   display: flex;
   flex-direction: column;
-  flex: 1;
-  min-height: 0;
+  flex: none;
   max-height: calc(var(--field-height) * var(--visible-fields) + 4px);
   margin-top: 8px;
   padding-right: 4px;

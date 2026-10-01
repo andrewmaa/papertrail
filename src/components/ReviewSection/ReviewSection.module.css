@@ -1,13 +1,13 @@
 .section {
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 28px;
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 24px;
+  gap: 16px;
 }
 
 @media (max-width: 900px) {

@@ -1,8 +1,8 @@
 .panel {
   width: 100%;
-  max-width: 1194px;
+  max-width: 1080px;
   margin: 0 auto;
-  padding: clamp(28px, 4vw, 48px);
+  padding: clamp(24px, 3.5vw, 40px);
   border-radius: var(--radius-md);
   box-shadow: 0 8px 12px rgba(0, 0, 0, 0.04);
 }

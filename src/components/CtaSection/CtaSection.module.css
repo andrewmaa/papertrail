@@ -8,12 +8,12 @@
 .copy {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  max-width: 626px;
+  gap: 12px;
+  max-width: 520px;
 }
 
 .eyebrow {
-  font-size: 16px;
+  font-size: 13px;
   line-height: normal;
   letter-spacing: var(--tracking);
   text-transform: uppercase;
@@ -21,14 +21,14 @@
 }
 
 .title {
-  font-size: clamp(36px, 4.5vw, 64px);
+  font-size: clamp(28px, 3.2vw, 40px);
   line-height: 1.1;
   letter-spacing: var(--tracking);
   color: var(--color-paper-warm);
 }
 
 .description {
-  font-size: clamp(18px, 1.7vw, 24px);
+  font-size: clamp(16px, 1.3vw, 18px);
   line-height: 1.5;
   letter-spacing: var(--tracking);
   color: var(--color-paper-warm);
@@ -38,7 +38,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 24px;
+  gap: 16px;
   flex-shrink: 0;
 }
 

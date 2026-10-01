@@ -269,6 +269,10 @@
   border-bottom: 1px dashed var(--color-rule);
 }
 
+.field:last-child .fieldValueRow {
+  border-bottom-color: transparent;
+}
+
 .fieldValue {
   margin: 0;
   font-style: italic;

@@ -74,6 +74,8 @@
 }
 
 .fields {
+  --card-unit: var(--u);
+
   display: flex;
   flex-direction: column;
   gap: calc(16 * var(--u));

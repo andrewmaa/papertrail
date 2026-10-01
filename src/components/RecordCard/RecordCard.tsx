@@ -10,6 +10,8 @@ export type RecordCardProps = {
   pages: number;
   box: string;
   onOpen?: () => void;
+  selected?: boolean;
+  onToggleSelect?: () => void;
 };
 
 const STATUS_TONE: Record<RecordStatus, string> = {
@@ -26,10 +28,13 @@ export default function RecordCard({
   pages,
   box,
   onOpen,
+  selected = false,
+  onToggleSelect,
 }: RecordCardProps) {
   const tone = STATUS_TONE[status];
 
   return (
+    <div className={styles.wrapper} data-selected={selected || undefined}>
     <button type="button" className={styles.card} aria-label={`Open ${title}`} onClick={onOpen}>
       <div className={styles.preview} aria-hidden="true">
         <div className={styles.paperStack}>
@@ -65,5 +70,18 @@ export default function RecordCard({
         </span>
       </footer>
     </button>
+      {onToggleSelect ? (
+        <label className={styles.select}>
+          <input
+            type="checkbox"
+            className={styles.selectInput}
+            checked={selected}
+            onChange={onToggleSelect}
+            aria-label={`Select ${title}`}
+          />
+          <span className={styles.checkbox} aria-hidden="true" />
+        </label>
+      ) : null}
+    </div>
   );
 }

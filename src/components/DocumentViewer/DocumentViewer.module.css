@@ -5,6 +5,9 @@
   display: grid;
   place-items: center;
   padding: clamp(12px, 2vw, 22px);
+  padding-bottom: 48px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   background-color: rgba(42, 42, 42, 0);
   backdrop-filter: blur(0);
   transition:
@@ -30,7 +33,7 @@
   align-items: center;
   gap: 14px;
   width: min(440px, 100%);
-  max-height: calc(100svh - 24px);
+  margin: auto;
   opacity: 0;
   transform: translateY(18px) scale(0.96);
   transition:
@@ -114,6 +117,10 @@
   filter: brightness(0);
 }
 
+.notesIcon[data-active] {
+  filter: brightness(0) invert(1);
+}
+
 .toolCount {
   display: inline-grid;
   place-items: center;
@@ -135,14 +142,13 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  flex: none;
   width: 100%;
-  max-height: min(560px, calc(100svh - 130px));
-  padding: clamp(20px, 2.4vw, 28px);
+  padding: clamp(18px, 2.4vw, 28px);
   background-color: var(--color-paper);
   border: 2.5px solid var(--color-ink-strong);
   border-radius: 20px;
   box-shadow: 9px 11px 0 rgba(26, 20, 16, 0.12);
-  transform: rotate(-1deg);
   overflow: hidden;
 }
 
@@ -201,13 +207,16 @@
 }
 
 .fields {
+  --field-height: 82px;
+  --visible-fields: 6;
   display: flex;
   flex-direction: column;
-  flex: 1;
-  min-height: 0;
+  flex: none;
+  max-height: calc(var(--field-height) * var(--visible-fields) + 4px);
   margin-top: 8px;
   padding-right: 4px;
-  overflow: auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .field {
@@ -260,6 +269,10 @@
   border-bottom: 1px dashed var(--color-rule);
 }
 
+.field:last-child .fieldValueRow {
+  border-bottom-color: transparent;
+}
+
 .fieldValue {
   margin: 0;
   font-style: italic;
@@ -277,6 +290,50 @@
   margin-top: 20px;
   padding-top: 18px;
   border-top: 1px dashed var(--color-rule);
+}
+
+.fieldInput {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  font-family: inherit;
+  background-color: transparent;
+  border: 0;
+  border-radius: 4px;
+  outline: 1px solid rgba(26, 20, 16, 0.14);
+  outline-offset: 3px;
+  transition: outline-color 150ms ease;
+}
+
+.fieldLabel.fieldInput {
+  height: 1.5em;
+}
+
+.fieldValue.fieldInput {
+  height: 1.4em;
+}
+
+.fieldInput:hover {
+  outline-color: rgba(26, 20, 16, 0.3);
+}
+
+.fieldInput:focus-visible {
+  outline-color: rgba(26, 20, 16, 0.55);
+}
+
+.fields[data-editing] {
+  margin-inline: -6px;
+  padding-inline: 6px 10px;
+}
+
+.editFooter {
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+  padding-top: 10px;
 }
 
 .footerDot {
@@ -330,25 +387,42 @@
   }
 }
 
-@media (max-width: 900px) {
-  .overlay {
-    align-items: flex-start;
-    padding-top: 16px;
-    overflow: auto;
+@media (max-height: 720px) {
+  .fields {
+    --field-height: 68px;
   }
 
+  .field {
+    padding-top: 12px;
+  }
+
+  .fieldValueRow {
+    margin-top: 3px;
+    padding: 4px 0;
+  }
+
+  .footer {
+    margin-top: 12px;
+    padding-top: 12px;
+  }
+
+  .editFooter {
+    margin-top: 8px;
+    padding-top: 8px;
+  }
+}
+
+@media (max-width: 900px) {
   .overlay[data-entered][data-notes] {
     padding-right: clamp(12px, 2vw, 22px);
   }
 
   .stage {
     width: min(100%, 400px);
-    max-height: none;
   }
 
   .sheet {
     transform: none;
-    max-height: none;
   }
 
   .toolbar {

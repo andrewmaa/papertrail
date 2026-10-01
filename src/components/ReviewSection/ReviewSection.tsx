@@ -2,6 +2,9 @@ import InfoCard from "../InfoCard/InfoCard";
 import SectionIntro from "../SectionIntro/SectionIntro";
 import SectionPanel from "../SectionPanel/SectionPanel";
 import styles from "./ReviewSection.module.css";
+import { FlaggedArt, SourceArt, TrailArt } from "../CardArt/CardArt";
+
+const ARTS = [<FlaggedArt key="f" />, <SourceArt key="s" />, <TrailArt key="t" />];
 
 const CARDS = [
   {
@@ -27,8 +30,8 @@ export default function ReviewSection() {
         description="Papertrail flags uncertain items so reviewers can check, correct, and approve before data moves downstream."
       />
       <div className={styles.grid}>
-        {CARDS.map((card) => (
-          <InfoCard key={card.title} {...card} />
+        {CARDS.map((card, i) => (
+          <InfoCard key={card.title} {...card} index={i} art={ARTS[i]} />
         ))}
       </div>
     </SectionPanel>

@@ -8,7 +8,9 @@ import FilterSidebar, {
 } from "../../components/FilterSidebar/FilterSidebar";
 import NavBar from "../../components/NavBar/NavBar";
 import RecordCard from "../../components/RecordCard/RecordCard";
+import UploadModal from "../../components/UploadModal/UploadModal";
 import { RECORDS, type RecordDocument } from "../../data/records";
+import { exportRecordsAsCsv } from "../../lib/exportRecords";
 import styles from "./DashboardPage.module.css";
 
 const STATS = [
@@ -38,6 +40,8 @@ export default function DashboardPage() {
   const [sort, setSort] = useState<SortOption>("Newest");
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [activeRecord, setActiveRecord] = useState<RecordDocument | null>(null);
+  const [uploadOpen, setUploadOpen] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   const typeCounts = useMemo(() => {
     const counts: Record<DocType, number> = {
@@ -81,9 +85,28 @@ export default function DashboardPage() {
     return list;
   }, [search, selectedTypes, selectedStatuses, sort]);
 
+  const selectedRecords = useMemo(
+    () => RECORDS.filter((record) => selectedIds.has(record.id)),
+    [selectedIds],
+  );
+
+  const allVisibleSelected =
+    filtered.length > 0 && filtered.every((record) => selectedIds.has(record.id));
+
+  function toggleSelectAll() {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      for (const record of filtered) {
+        if (allVisibleSelected) next.delete(record.id);
+        else next.add(record.id);
+      }
+      return next;
+    });
+  }
+
   return (
     <div className={styles.page}>
-      <NavBar />
+      <NavBar search={{ value: search, onChange: setSearch }} />
 
       <div className={styles.toolbar}>
         <button
@@ -104,8 +127,6 @@ export default function DashboardPage() {
           data-open={filtersOpen || undefined}
         >
           <FilterSidebar
-            search={search}
-            onSearchChange={setSearch}
             selectedTypes={selectedTypes}
             onToggleType={(type) => setSelectedTypes((prev) => toggleInSet(prev, type))}
             selectedStatuses={selectedStatuses}
@@ -124,12 +145,36 @@ export default function DashboardPage() {
               <p className={styles.breadcrumb}>Archive / All records</p>
               <h1 className={styles.title}>Your filing cabinet, in the cloud.</h1>
             </div>
-            <Button variant="primary" className={styles.upload}>
-              <span className={styles.uploadPlus} aria-hidden="true">
-                +
-              </span>
-              Upload new record
-            </Button>
+            <div className={styles.actions}>
+              <Button
+                variant="outline"
+                className={styles.action}
+                aria-pressed={allVisibleSelected}
+                disabled={filtered.length === 0}
+                onClick={toggleSelectAll}
+              >
+                {allVisibleSelected ? "Deselect all" : "Select all"}
+              </Button>
+              <Button
+                variant="outline"
+                className={styles.action}
+                disabled={selectedRecords.length === 0}
+                onClick={() => exportRecordsAsCsv(selectedRecords)}
+              >
+                Export{selectedRecords.length > 0 ? ` (${selectedRecords.length})` : ""}
+              </Button>
+              <Button
+                variant="primary"
+                className={`${styles.action} ${styles.upload}`}
+                aria-haspopup="dialog"
+                onClick={() => setUploadOpen(true)}
+              >
+                <span className={styles.uploadPlus} aria-hidden="true">
+                  +
+                </span>
+                Upload new record
+              </Button>
+            </div>
           </header>
 
           <dl className={styles.stats}>
@@ -159,6 +204,10 @@ export default function DashboardPage() {
                     pages={record.pages}
                     box={record.box}
                     onOpen={() => setActiveRecord(record)}
+                    selected={selectedIds.has(record.id)}
+                    onToggleSelect={() =>
+                      setSelectedIds((prev) => toggleInSet(prev, record.id))
+                    }
                   />
                 </li>
               ))}
@@ -170,6 +219,8 @@ export default function DashboardPage() {
       {activeRecord ? (
         <DocumentViewer record={activeRecord} onClose={() => setActiveRecord(null)} />
       ) : null}
+
+      {uploadOpen ? <UploadModal onClose={() => setUploadOpen(false)} /> : null}
     </div>
   );
 }

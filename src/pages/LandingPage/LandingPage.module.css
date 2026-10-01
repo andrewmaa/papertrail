@@ -24,12 +24,12 @@
 .sections {
   display: flex;
   flex-direction: column;
-  gap: clamp(48px, 6vh, 96px);
+  gap: clamp(32px, 4vw, 56px);
   width: 100%;
   padding:
-    clamp(56px, 8vh, 120px)
-    clamp(16px, 8.54vw, 123px)
-    clamp(64px, 8vh, 112px);
+    clamp(48px, 6vw, 80px)
+    clamp(16px, 5vw, 64px)
+    clamp(56px, 6vw, 88px);
 }
 
 @media (max-width: 900px) {
@@ -46,6 +46,6 @@
 
   .sections {
     padding-inline: 16px;
-    gap: 40px;
+    gap: 28px;
   }
 }

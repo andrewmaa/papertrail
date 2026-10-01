@@ -1,3 +1,76 @@
+.wrapper {
+  position: relative;
+  transition: transform 150ms ease;
+}
+
+.wrapper:hover {
+  transform: translateY(-2px);
+}
+
+.wrapper[data-selected] .card {
+  border-color: var(--color-ink);
+  background-color: var(--color-paper);
+}
+
+.select {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+}
+
+.selectInput {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.checkbox {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid rgba(75, 66, 60, 0.45);
+  border-radius: 5px;
+  background-color: var(--color-paper);
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease;
+  pointer-events: none;
+}
+
+.select:hover .checkbox {
+  border-color: var(--color-ink);
+}
+
+.selectInput:checked + .checkbox {
+  border-color: var(--color-ink);
+  background-color: var(--color-ink);
+}
+
+.selectInput:checked + .checkbox::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 5.5px;
+  width: 5px;
+  height: 10px;
+  border: solid var(--color-paper);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.selectInput:focus-visible + .checkbox {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
 .card {
   display: flex;
   width: 100%;
@@ -11,15 +84,13 @@
   border-radius: var(--radius-card);
   transition:
     border-color 150ms ease,
-    background-color 150ms ease,
-    transform 150ms ease;
+    background-color 150ms ease;
   cursor: pointer;
 }
 
 .card:hover {
   border-color: rgba(75, 66, 60, 0.35);
   background-color: rgba(255, 252, 247, 0.9);
-  transform: translateY(-2px);
 }
 
 .card:focus-visible {

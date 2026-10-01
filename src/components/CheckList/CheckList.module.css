@@ -1,7 +1,7 @@
 .list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   padding: 0;
   list-style: none;
 }
@@ -10,15 +10,15 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 20px;
+  font-size: 16px;
   line-height: normal;
   letter-spacing: var(--tracking);
   color: var(--color-ink);
 }
 
 .mark {
-  width: 12px;
-  height: 12px;
+  width: 8px;
+  height: 8px;
   flex-shrink: 0;
   border-radius: 6px;
   background-color: var(--color-success);

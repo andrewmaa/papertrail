@@ -44,7 +44,7 @@ export default function Reveal({
   return (
     <Tag
       ref={ref as never}
-      className={[styles.reveal, visible ? styles.visible : "", className]
+      className={["reveal-root", styles.reveal, visible ? `${styles.visible} is-visible` : "", className]
         .filter(Boolean)
         .join(" ")}
       style={{ transitionDelay: visible ? `${delayMs}ms` : "0ms" }}

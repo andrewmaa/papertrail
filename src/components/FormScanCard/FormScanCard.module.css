@@ -1,17 +1,42 @@
 .stack {
-  --u: var(--card-unit, 1.3934px);
+  --u: clamp(
+    0.62px,
+    min(calc(90vw / 412), calc(80svh / 348)),
+    1.35px
+  );
+  --sheet-width: calc(384 * var(--u));
+  --sheet-height: calc(320 * var(--u));
 
   position: relative;
   width: calc(412 * var(--u));
-  height: calc(403 * var(--u));
+  height: calc(348 * var(--u));
+  max-width: 100%;
+  animation: stack-float 5.5s ease-in-out 1.1s infinite;
+}
+
+@keyframes stack-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stack {
+    animation: none;
+  }
 }
 
 .backSheet {
   position: absolute;
   top: calc(9.79 * var(--u));
   left: calc(9.71 * var(--u));
-  width: calc(384 * var(--u));
-  height: calc(381 * var(--u));
+  width: var(--sheet-width);
+  height: var(--sheet-height);
   background-color: var(--color-paper);
   border: calc(2 * var(--u)) solid var(--color-muted);
   border-radius: calc(12 * var(--u));
@@ -22,10 +47,12 @@
   position: absolute;
   top: calc(14.11 * var(--u));
   left: calc(21.72 * var(--u));
-  width: calc(384 * var(--u));
+  width: var(--sheet-width);
+  height: var(--sheet-height);
   display: flex;
   flex-direction: column;
-  padding: calc(24 * var(--u));
+  padding: calc(20 * var(--u)) calc(24 * var(--u));
+  overflow: hidden;
   background-color: var(--color-paper);
   border: calc(2 * var(--u)) solid var(--color-ink-strong);
   border-radius: calc(16 * var(--u));
@@ -33,6 +60,8 @@
 }
 
 .header {
+  --card-unit: var(--u);
+
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -48,19 +77,20 @@
 }
 
 .fields {
+  --card-unit: var(--u);
+
   display: flex;
   flex-direction: column;
-  gap: calc(16 * var(--u));
-  padding-top: calc(20 * var(--u));
+  gap: calc(10 * var(--u));
+  padding-top: calc(12 * var(--u));
 }
 
 .footer {
   display: flex;
   align-items: center;
   gap: calc(12 * var(--u));
-  margin-top: calc(20 * var(--u));
-  padding-top: calc(16 * var(--u));
-  border-top: calc(1 * var(--u)) dashed var(--color-rule);
+  margin-top: auto;
+  padding-top: calc(10 * var(--u));
 }
 
 .dot {
@@ -78,3 +108,4 @@
   color: var(--color-text);
   white-space: nowrap;
 }
+

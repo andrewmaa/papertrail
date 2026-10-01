@@ -1,0 +1,16 @@
+.badge {
+  --u: var(--card-unit, 1.3934px);
+
+  display: inline-flex;
+  padding: calc(2 * var(--u)) calc(8 * var(--u));
+  border-radius: 999px;
+  font-size: calc(12 * var(--u));
+  line-height: calc(16 * var(--u));
+  letter-spacing: var(--tracking);
+  white-space: nowrap;
+}
+
+.success {
+  background-color: var(--color-success-tint);
+  color: var(--color-success);
+}

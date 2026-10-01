@@ -1,0 +1,43 @@
+.field {
+  --u: var(--card-unit, 1.3934px);
+
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.label {
+  font-size: calc(10 * var(--u));
+  line-height: calc(15 * var(--u));
+  letter-spacing: var(--tracking);
+  text-transform: uppercase;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+.line {
+  margin-top: calc(4 * var(--u));
+  padding: calc(4 * var(--u)) 0;
+  border-bottom: calc(1 * var(--u)) dashed var(--color-rule);
+}
+
+.lineFlagged {
+  border-bottom-color: var(--color-danger);
+}
+
+.value {
+  font-style: italic;
+  font-size: calc(14 * var(--u));
+  line-height: calc(20 * var(--u));
+  letter-spacing: var(--tracking);
+  color: var(--color-ink-strong);
+  white-space: nowrap;
+}
+
+.flag {
+  font-size: calc(12 * var(--u));
+  line-height: calc(16 * var(--u));
+  letter-spacing: var(--tracking);
+  color: var(--color-danger);
+  white-space: nowrap;
+}

@@ -1,0 +1,44 @@
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.eyebrow {
+  font-size: 16px;
+  line-height: normal;
+  letter-spacing: var(--tracking);
+  text-transform: uppercase;
+  color: var(--color-ink);
+}
+
+.title {
+  font-size: clamp(36px, 4.5vw, 64px);
+  line-height: 1.1;
+  letter-spacing: var(--tracking);
+  color: var(--color-ink);
+}
+
+.description {
+  max-width: 52rem;
+  font-size: clamp(18px, 1.7vw, 24px);
+  line-height: 1.5;
+  letter-spacing: var(--tracking);
+  color: var(--color-muted);
+}
+
+.md .title {
+  font-size: clamp(32px, 3.9vw, 56px);
+}
+
+.md .description {
+  font-size: clamp(18px, 1.5vw, 22px);
+  line-height: 1.55;
+}
+
+.inverse .eyebrow,
+.inverse .title,
+.inverse .description {
+  color: var(--color-paper-warm);
+}

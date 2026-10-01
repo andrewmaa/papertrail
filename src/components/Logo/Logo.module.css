@@ -1,0 +1,39 @@
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(10px, 1vw, 14px);
+  width: auto;
+  height: clamp(40px, 5vh, 48px);
+  color: var(--color-ink);
+}
+
+.mark {
+  display: block;
+  flex-shrink: 0;
+  width: clamp(32px, 3vw, 40px);
+  height: clamp(32px, 3vw, 40px);
+}
+
+.wordmark {
+  font-size: clamp(26px, 2.4vw, 34px);
+  line-height: normal;
+  letter-spacing: var(--tracking);
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .logo {
+    width: auto;
+    height: 44px;
+    gap: 12px;
+  }
+
+  .mark {
+    width: 36px;
+    height: 36px;
+  }
+
+  .wordmark {
+    font-size: 32px;
+  }
+}

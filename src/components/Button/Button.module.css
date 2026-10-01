@@ -1,0 +1,68 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: clamp(38px, 4vh, 44px);
+  padding: 0 clamp(18px, 1.8vw, 24px);
+  border: 1px solid var(--color-ink);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-size: clamp(16px, 1.35vw, 18px);
+  line-height: normal;
+  letter-spacing: var(--tracking);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    color 150ms ease,
+    transform 150ms ease;
+}
+
+.button:active {
+  transform: translateY(1px);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
+.primary {
+  background-color: var(--color-ink);
+  color: #fff;
+}
+
+.primary:hover {
+  background-color: var(--color-ink-strong);
+  border-color: var(--color-ink-strong);
+}
+
+.outline {
+  background-color: var(--color-paper-warm);
+  color: var(--color-ink);
+}
+
+.outline:hover {
+  background-color: #f3efe7;
+}
+
+.inverse {
+  background-color: var(--color-paper-warm);
+  border-color: var(--color-paper-warm);
+  color: var(--color-ink);
+}
+
+.inverse:hover {
+  background-color: #f3efe7;
+  border-color: #f3efe7;
+}
+
+.inverseOutline {
+  background-color: transparent;
+  border-color: var(--color-paper-warm);
+  color: var(--color-paper-warm);
+}
+
+.inverseOutline:hover {
+  background-color: rgba(255, 254, 250, 0.08);
+}

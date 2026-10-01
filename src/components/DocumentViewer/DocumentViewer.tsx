@@ -1,8 +1,4 @@
 import { useEffect, useId, useRef, useState } from "react";
-import editIcon from "../../assets/icons/edit.svg";
-import notesIcon from "../../assets/icons/notes.svg";
-import originalIcon from "../../assets/icons/original.svg";
-import shareIcon from "../../assets/icons/share.svg";
 import { type Comment, type RecordDocument } from "../../data/records";
 import Button from "../Button/Button";
 import NotesPanel from "./NotesPanel";
@@ -28,7 +24,7 @@ export default function DocumentViewer({ record, onClose }: DocumentViewerProps)
   const titleId = useId();
   const shareId = useId();
   const isPending = record.status !== "Digitized";
-  const [notesOpen, setNotesOpen] = useState(!isPending);
+  const [notesOpen, setNotesOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   const [entered, setEntered] = useState(false);
   const [comments, setComments] = useState<Comment[]>(record.comments);
@@ -60,7 +56,7 @@ export default function DocumentViewer({ record, onClose }: DocumentViewerProps)
     setDraft(record.fields);
     setEditing(false);
     setShowOriginal(false);
-    setNotesOpen(record.status === "Digitized");
+    setNotesOpen(false);
     setShareOpen(false);
     const frame = requestAnimationFrame(() => setEntered(true));
     return () => cancelAnimationFrame(frame);
@@ -138,94 +134,6 @@ export default function DocumentViewer({ record, onClose }: DocumentViewerProps)
         aria-labelledby={titleId}
         onClick={(event) => event.stopPropagation()}
       >
-        <div className={styles.toolbar} role="toolbar" aria-label="Record actions">
-          {isPending ? null : (
-          <button
-            type="button"
-            className={`${styles.tool} ${styles.toolActive}`}
-            aria-pressed={editing}
-            disabled={showOriginal}
-            onClick={editing ? cancelEditing : startEditing}
-          >
-            <img
-              src={editIcon}
-              alt=""
-              width={17.678}
-              height={17.678}
-              className={styles.notesIcon}
-              data-active={editing || undefined}
-            />
-            Edit
-          </button>
-          )}
-          {isPending && !showOriginal ? null : (
-            <button
-              type="button"
-              className={`${styles.tool} ${styles.toolActive}`}
-              aria-pressed={showOriginal}
-              onClick={() => {
-                if (editing) cancelEditing();
-                setShowOriginal((open) => !open);
-              }}
-            >
-              <img
-                src={originalIcon}
-                alt=""
-                width={17.678}
-                height={17.678}
-                className={styles.notesIcon}
-                data-active={showOriginal || undefined}
-              />
-              Original
-            </button>
-          )}
-          {isPending ? null : (
-          <>
-          <button
-            type="button"
-            className={`${styles.tool} ${styles.toolActive}`}
-            aria-pressed={shareOpen}
-            aria-expanded={shareOpen}
-            aria-controls={shareId}
-            onClick={() => {
-              setShareOpen((open) => !open);
-              setNotesOpen(false);
-            }}
-          >
-            <img
-              src={shareIcon}
-              alt=""
-              width={17.678}
-              height={17.678}
-              className={styles.notesIcon}
-              data-active={shareOpen || undefined}
-            />
-            Share
-          </button>
-          <button
-            type="button"
-            className={`${styles.tool} ${styles.toolActive}`}
-            aria-pressed={notesOpen}
-            onClick={() => {
-              setNotesOpen((open) => !open);
-              setShareOpen(false);
-            }}
-          >
-            <img
-              src={notesIcon}
-              alt=""
-              width={17.678}
-              height={17.678}
-              className={styles.notesIcon}
-              data-active={notesOpen || undefined}
-            />
-            Notes
-            <span className={styles.toolCount}>{totalNotes}</span>
-          </button>
-          </>
-          )}
-        </div>
-
         <article className={styles.sheet}>
           <header className={styles.sheetHeader}>
             <div className={styles.sheetHeading}>

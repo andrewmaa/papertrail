@@ -27,6 +27,7 @@ export default function Hero() {
           status="✓ Completed"
           fields={INTAKE_FIELDS}
           summary="3 of 4 fields extracted · 1 flagged"
+          annotation="check this"
         />
       </div>
     </section>

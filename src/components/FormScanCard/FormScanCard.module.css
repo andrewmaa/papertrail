@@ -1,15 +1,15 @@
 .stack {
   --u: clamp(
     0.62px,
-    min(calc(90vw / 412), calc(80svh / 340)),
+    min(calc(90vw / 412), calc(80svh / 348)),
     1.35px
   );
   --sheet-width: calc(384 * var(--u));
-  --sheet-height: calc(312 * var(--u));
+  --sheet-height: calc(320 * var(--u));
 
   position: relative;
   width: calc(412 * var(--u));
-  height: calc(340 * var(--u));
+  height: calc(348 * var(--u));
   max-width: 100%;
   animation: stack-float 5.5s ease-in-out 1.1s infinite;
 }
@@ -51,7 +51,8 @@
   height: var(--sheet-height);
   display: flex;
   flex-direction: column;
-  padding: calc(24 * var(--u));
+  padding: calc(20 * var(--u)) calc(24 * var(--u));
+  overflow: hidden;
   background-color: var(--color-paper);
   border: calc(2 * var(--u)) solid var(--color-ink-strong);
   border-radius: calc(16 * var(--u));
@@ -78,8 +79,8 @@
 
   display: flex;
   flex-direction: column;
-  gap: calc(16 * var(--u));
-  padding-top: calc(20 * var(--u));
+  gap: calc(10 * var(--u));
+  padding-top: calc(12 * var(--u));
 }
 
 .footer {
@@ -87,7 +88,7 @@
   align-items: center;
   gap: calc(12 * var(--u));
   margin-top: auto;
-  padding-top: calc(16 * var(--u));
+  padding-top: calc(10 * var(--u));
   border-top: calc(1 * var(--u)) dashed var(--color-rule);
 }
 

@@ -39,6 +39,9 @@ export type RecordDocument = {
   fields: DocumentField[];
   annotations: Annotation[];
   comments: Comment[];
+  language?: string;
+  confidence?: string;
+  sourcePreviewUrl?: string;
 };
 
 const DANA: NoteAuthor = { initials: "DR", name: "Dana Reyes" };

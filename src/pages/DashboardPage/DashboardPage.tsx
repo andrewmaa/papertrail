@@ -13,12 +13,6 @@ import { RECORDS, type RecordDocument } from "../../data/records";
 import { exportRecordsAsCsv } from "../../lib/exportRecords";
 import styles from "./DashboardPage.module.css";
 
-const STATS = [
-  { value: "9", label: "records" },
-  { value: "252", label: "pages scanned" },
-  { value: "7", label: "boxes shredded" },
-];
-
 const SORT_LABELS: Record<SortOption, string> = {
   Newest: "newest",
   Oldest: "oldest",
@@ -34,6 +28,7 @@ function toggleInSet<T>(set: Set<T>, value: T): Set<T> {
 }
 
 export default function DashboardPage() {
+  const [records, setRecords] = useState<RecordDocument[]>(RECORDS);
   const [search, setSearch] = useState("");
   const [selectedTypes, setSelectedTypes] = useState<Set<DocType>>(new Set());
   const [selectedStatuses, setSelectedStatuses] = useState<Set<StatusFilter>>(new Set());
@@ -51,14 +46,24 @@ export default function DashboardPage() {
       Tax: 0,
       Letter: 0,
     };
-    for (const record of RECORDS) counts[record.type] += 1;
+    for (const record of records) counts[record.type] += 1;
     return counts;
-  }, []);
+  }, [records]);
+
+  const stats = useMemo(() => {
+    const pages = records.reduce((sum, record) => sum + record.pages, 0);
+    const boxes = new Set(records.map((record) => record.box)).size;
+    return [
+      { value: String(records.length), label: "records" },
+      { value: String(pages), label: "pages scanned" },
+      { value: String(boxes), label: "boxes" },
+    ];
+  }, [records]);
 
   const filtered = useMemo(() => {
     const query = search.trim().toLowerCase();
 
-    let list = RECORDS.filter((record) => {
+    let list = records.filter((record) => {
       if (selectedTypes.size > 0 && !selectedTypes.has(record.type)) return false;
       if (selectedStatuses.size > 0 && !selectedStatuses.has(record.status)) return false;
       if (!query) return true;
@@ -83,11 +88,11 @@ export default function DashboardPage() {
     });
 
     return list;
-  }, [search, selectedTypes, selectedStatuses, sort]);
+  }, [records, search, selectedTypes, selectedStatuses, sort]);
 
   const selectedRecords = useMemo(
-    () => RECORDS.filter((record) => selectedIds.has(record.id)),
-    [selectedIds],
+    () => records.filter((record) => selectedIds.has(record.id)),
+    [records, selectedIds],
   );
 
   const allVisibleSelected =
@@ -102,6 +107,26 @@ export default function DashboardPage() {
       }
       return next;
     });
+  }
+
+  function addRecord(record: RecordDocument) {
+    setRecords((prev) => [record, ...prev.filter((item) => item.id !== record.id)]);
+  }
+
+  function updateRecord(record: RecordDocument) {
+    setRecords((prev) => prev.map((item) => (item.id === record.id ? record : item)));
+    setActiveRecord((current) => (current?.id === record.id ? record : current));
+  }
+
+  function removeRecord(id: string) {
+    setRecords((prev) => prev.filter((item) => item.id !== id));
+    setSelectedIds((prev) => {
+      if (!prev.has(id)) return prev;
+      const next = new Set(prev);
+      next.delete(id);
+      return next;
+    });
+    setActiveRecord((current) => (current?.id === id ? null : current));
   }
 
   return (
@@ -178,7 +203,7 @@ export default function DashboardPage() {
           </header>
 
           <dl className={styles.stats}>
-            {STATS.map((stat) => (
+            {stats.map((stat) => (
               <div key={stat.label} className={styles.stat}>
                 <dt className={styles.statValue}>{stat.value}</dt>
                 <dd className={styles.statLabel}>{stat.label}</dd>
@@ -187,7 +212,7 @@ export default function DashboardPage() {
           </dl>
 
           <p className={styles.showing}>
-            Showing {filtered.length} of {RECORDS.length} · sorted by {SORT_LABELS[sort]}
+            Showing {filtered.length} of {records.length} · sorted by {SORT_LABELS[sort]}
           </p>
 
           {filtered.length === 0 ? (
@@ -220,7 +245,14 @@ export default function DashboardPage() {
         <DocumentViewer record={activeRecord} onClose={() => setActiveRecord(null)} />
       ) : null}
 
-      {uploadOpen ? <UploadModal onClose={() => setUploadOpen(false)} /> : null}
+      {uploadOpen ? (
+        <UploadModal
+          onClose={() => setUploadOpen(false)}
+          onProcessing={addRecord}
+          onCreated={updateRecord}
+          onFailed={removeRecord}
+        />
+      ) : null}
     </div>
   );
 }

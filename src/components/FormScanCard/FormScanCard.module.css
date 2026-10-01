@@ -1,9 +1,14 @@
 .stack {
-  --u: clamp(0.62px, min(0.09vw, 0.118svh), 1.35px);
+  --u: clamp(
+    0.62px,
+    min(calc(90vw / 412), calc(80svh / 403)),
+    1.35px
+  );
 
   position: relative;
   width: calc(412 * var(--u));
   height: calc(403 * var(--u));
+  max-width: 100%;
 }
 
 .backSheet {
@@ -79,8 +84,3 @@
   white-space: nowrap;
 }
 
-@media (max-width: 900px) {
-  .stack {
-    --u: clamp(0.62px, calc((100vw - 48px) / 412), 1.2px);
-  }
-}

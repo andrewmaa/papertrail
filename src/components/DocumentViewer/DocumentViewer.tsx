@@ -30,6 +30,7 @@ export default function DocumentViewer({ record, onClose }: DocumentViewerProps)
   const requestClose = () => {
     if (closingRef.current) return;
     closingRef.current = true;
+    setNotesOpen(false);
     setEntered(false);
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     closeTimerRef.current = window.setTimeout(onClose, reduceMotion ? 0 : CLOSE_DURATION_MS);

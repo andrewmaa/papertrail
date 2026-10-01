@@ -82,14 +82,6 @@ export default function UploadModal({ onClose }: UploadModalProps) {
               Upload your files and manage language outputs seamlessly.
             </p>
           </div>
-          <button
-            type="button"
-            className={styles.close}
-            aria-label="Close upload"
-            onClick={requestClose}
-          >
-            <span aria-hidden="true">{"\u00d7"}</span>
-          </button>
         </header>
 
         <div className={styles.body}>
@@ -101,9 +93,6 @@ export default function UploadModal({ onClose }: UploadModalProps) {
         <footer className={styles.footer}>
           <p className={styles.estimate}>Estimated processing time: 2-5 minutes</p>
           <div className={styles.actions}>
-            <Button variant="outline" className={styles.return} onClick={requestClose}>
-              Return
-            </Button>
             <Button
               variant="primary"
               className={styles.create}

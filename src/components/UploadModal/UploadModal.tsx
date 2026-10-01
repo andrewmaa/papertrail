@@ -5,6 +5,8 @@ import LanguageCard from "../LanguageCard/LanguageCard";
 import OutputOptions, { type OutputPreference } from "../OutputOptions/OutputOptions";
 import styles from "./UploadModal.module.css";
 
+const CLOSE_DURATION_MS = 280;
+
 type UploadModalProps = {
   onClose: () => void;
 };
@@ -17,10 +19,26 @@ export default function UploadModal({ onClose }: UploadModalProps) {
   const [files, setFiles] = useState<File[]>([]);
   const [preference, setPreference] = useState<OutputPreference>("english");
 
+  const closingRef = useRef(false);
+  const closeTimerRef = useRef<number>(undefined);
+
+  const requestClose = () => {
+    if (closingRef.current) return;
+    closingRef.current = true;
+    setEntered(false);
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    closeTimerRef.current = window.setTimeout(onClose, reduceMotion ? 0 : CLOSE_DURATION_MS);
+  };
+  const requestCloseRef = useRef(requestClose);
+  requestCloseRef.current = requestClose;
+
   useEffect(() => {
     const frame = requestAnimationFrame(() => setEntered(true));
     panelRef.current?.focus();
-    return () => cancelAnimationFrame(frame);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.clearTimeout(closeTimerRef.current);
+    };
   }, []);
 
   useEffect(() => {
@@ -28,7 +46,7 @@ export default function UploadModal({ onClose }: UploadModalProps) {
     document.body.style.overflow = "hidden";
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
+      if (event.key === "Escape") requestCloseRef.current();
     };
 
     window.addEventListener("keydown", onKeyDown);
@@ -36,14 +54,14 @@ export default function UploadModal({ onClose }: UploadModalProps) {
       document.body.style.overflow = previous;
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [onClose]);
+  }, []);
 
   return (
     <div
       className={styles.overlay}
       data-entered={entered || undefined}
       role="presentation"
-      onClick={onClose}
+      onClick={requestClose}
     >
       <div
         ref={panelRef}
@@ -68,7 +86,7 @@ export default function UploadModal({ onClose }: UploadModalProps) {
             type="button"
             className={styles.close}
             aria-label="Close upload"
-            onClick={onClose}
+            onClick={requestClose}
           >
             <span aria-hidden="true">{"\u00d7"}</span>
           </button>
@@ -83,14 +101,14 @@ export default function UploadModal({ onClose }: UploadModalProps) {
         <footer className={styles.footer}>
           <p className={styles.estimate}>Estimated processing time: 2-5 minutes</p>
           <div className={styles.actions}>
-            <Button variant="outline" className={styles.return} onClick={onClose}>
+            <Button variant="outline" className={styles.return} onClick={requestClose}>
               Return
             </Button>
             <Button
               variant="primary"
               className={styles.create}
               disabled={files.length === 0}
-              onClick={onClose}
+              onClick={requestClose}
             >
               Create
             </Button>

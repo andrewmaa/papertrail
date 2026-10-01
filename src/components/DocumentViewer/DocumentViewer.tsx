@@ -1,4 +1,4 @@
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import editIcon from "../../assets/icons/edit.svg";
 import notesIcon from "../../assets/icons/notes.svg";
 import shareIcon from "../../assets/icons/share.svg";
@@ -11,6 +11,8 @@ type DocumentViewerProps = {
   onClose: () => void;
 };
 
+const CLOSE_DURATION_MS = 280;
+
 const COMPLETION_TONE: Record<string, string> = {
   Completed: "completed",
   "In progress": "progress",
@@ -22,8 +24,23 @@ export default function DocumentViewer({ record, onClose }: DocumentViewerProps)
   const [notesOpen, setNotesOpen] = useState(true);
   const [entered, setEntered] = useState(false);
   const [comments, setComments] = useState<Comment[]>(record.comments);
+  const closingRef = useRef(false);
+  const closeTimerRef = useRef<number>(undefined);
+
+  const requestClose = () => {
+    if (closingRef.current) return;
+    closingRef.current = true;
+    setEntered(false);
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    closeTimerRef.current = window.setTimeout(onClose, reduceMotion ? 0 : CLOSE_DURATION_MS);
+  };
+  const requestCloseRef = useRef(requestClose);
+  requestCloseRef.current = requestClose;
+
+  useEffect(() => () => window.clearTimeout(closeTimerRef.current), []);
 
   useEffect(() => {
+    closingRef.current = false;
     setComments(record.comments);
     setNotesOpen(true);
     const frame = requestAnimationFrame(() => setEntered(true));
@@ -40,7 +57,7 @@ export default function DocumentViewer({ record, onClose }: DocumentViewerProps)
           setNotesOpen(false);
           return;
         }
-        onClose();
+        requestCloseRef.current();
       }
     };
 
@@ -49,7 +66,7 @@ export default function DocumentViewer({ record, onClose }: DocumentViewerProps)
       document.body.style.overflow = previous;
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [notesOpen, onClose]);
+  }, [notesOpen]);
 
   const extracted = record.fields.length;
   const totalNotes = record.annotations.length + comments.length;
@@ -73,7 +90,7 @@ export default function DocumentViewer({ record, onClose }: DocumentViewerProps)
       data-entered={entered || undefined}
       data-notes={notesOpen || undefined}
       role="presentation"
-      onClick={onClose}
+      onClick={requestClose}
     >
       <div
         className={styles.stage}

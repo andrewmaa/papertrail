@@ -58,6 +58,7 @@ export default function NavBar({ search }: NavBarProps) {
       <header className={styles.bar}>
         <nav className={styles.inner} aria-label="Primary">
           <Logo />
+          <div className={styles.searchGroup}>
           <form role="search" className={styles.searchForm} onSubmit={(event) => event.preventDefault()}>
             <label htmlFor="nav-search" className={styles.visuallyHidden}>
               Search records
@@ -85,6 +86,14 @@ export default function NavBar({ search }: NavBarProps) {
               onChange={(event) => search.onChange(event.target.value)}
             />
           </form>
+          <Button
+            variant="outline"
+            href="mailto:support@papertrail.com?subject=Papertrail%20support"
+            className={styles.supportButton}
+          >
+            Contact support
+          </Button>
+          </div>
         </nav>
       </header>
     );

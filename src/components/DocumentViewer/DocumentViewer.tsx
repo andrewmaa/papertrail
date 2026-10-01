@@ -7,6 +7,7 @@ import { type Comment, type RecordDocument } from "../../data/records";
 import Button from "../Button/Button";
 import NotesPanel from "./NotesPanel";
 import OriginalScan from "./OriginalScan";
+import PendingNotice from "./PendingNotice";
 import SharePanel from "./SharePanel";
 import styles from "./DocumentViewer.module.css";
 
@@ -26,7 +27,8 @@ const COMPLETION_TONE: Record<string, string> = {
 export default function DocumentViewer({ record, onClose }: DocumentViewerProps) {
   const titleId = useId();
   const shareId = useId();
-  const [notesOpen, setNotesOpen] = useState(true);
+  const isPending = record.status !== "Digitized";
+  const [notesOpen, setNotesOpen] = useState(!isPending);
   const [shareOpen, setShareOpen] = useState(false);
   const [entered, setEntered] = useState(false);
   const [comments, setComments] = useState<Comment[]>(record.comments);
@@ -34,7 +36,6 @@ export default function DocumentViewer({ record, onClose }: DocumentViewerProps)
   const [draft, setDraft] = useState(record.fields);
   const [editing, setEditing] = useState(false);
   const [showOriginal, setShowOriginal] = useState(false);
-  const hasOriginal = record.status === "Digitized";
   const closingRef = useRef(false);
   const closeTimerRef = useRef<number>(undefined);
 
@@ -59,7 +60,7 @@ export default function DocumentViewer({ record, onClose }: DocumentViewerProps)
     setDraft(record.fields);
     setEditing(false);
     setShowOriginal(false);
-    setNotesOpen(true);
+    setNotesOpen(record.status === "Digitized");
     setShareOpen(false);
     const frame = requestAnimationFrame(() => setEntered(true));
     return () => cancelAnimationFrame(frame);
@@ -138,6 +139,7 @@ export default function DocumentViewer({ record, onClose }: DocumentViewerProps)
         onClick={(event) => event.stopPropagation()}
       >
         <div className={styles.toolbar} role="toolbar" aria-label="Record actions">
+          {isPending ? null : (
           <button
             type="button"
             className={`${styles.tool} ${styles.toolActive}`}
@@ -155,7 +157,7 @@ export default function DocumentViewer({ record, onClose }: DocumentViewerProps)
             />
             Edit
           </button>
-          {hasOriginal ? (
+          )}
             <button
               type="button"
               className={`${styles.tool} ${styles.toolActive}`}
@@ -175,7 +177,8 @@ export default function DocumentViewer({ record, onClose }: DocumentViewerProps)
               />
               Original
             </button>
-          ) : null}
+          {isPending ? null : (
+          <>
           <button
             type="button"
             className={`${styles.tool} ${styles.toolActive}`}
@@ -217,6 +220,8 @@ export default function DocumentViewer({ record, onClose }: DocumentViewerProps)
             Notes
             <span className={styles.toolCount}>{totalNotes}</span>
           </button>
+          </>
+          )}
         </div>
 
         <article className={styles.sheet}>
@@ -237,6 +242,8 @@ export default function DocumentViewer({ record, onClose }: DocumentViewerProps)
 
           {showOriginal ? (
             <OriginalScan key={record.id} record={record} />
+          ) : isPending ? (
+            <PendingNotice record={record} onViewOriginal={() => setShowOriginal(true)} />
           ) : (
           <>
           <div className={styles.fields} data-editing={editing || undefined}>

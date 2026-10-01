@@ -58,6 +58,16 @@
   display: none;
 }
 
+.searchGroup {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex: 1;
+  max-width: 740px;
+  min-width: 0;
+}
+
 .searchForm {
   position: relative;
   display: flex;
@@ -65,6 +75,30 @@
   flex: 1;
   max-width: 560px;
   min-width: 0;
+}
+
+.supportButton {
+  flex-shrink: 0;
+  height: 44px;
+  padding-block: 0;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .inner:has(.searchGroup) {
+    flex-wrap: wrap;
+    row-gap: 14px;
+  }
+
+  .searchGroup {
+    flex-basis: 100%;
+    max-width: none;
+  }
+
+  .supportButton {
+    padding-inline: 14px;
+    font-size: 14px;
+  }
 }
 
 .searchIcon {

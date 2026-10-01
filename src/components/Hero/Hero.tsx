@@ -6,7 +6,7 @@ const INTAKE_FIELDS = [
   { label: "Full name", value: "Margaret Okonkwo" },
   { label: "Date of birth", value: "14 / 03 / 1982" },
   { label: "Insurance ID", value: "HX-2291-004" },
-  { label: "Signature", value: "⚠️ Missing — flagged for review", flagged: true },
+  { label: "Signature", value: "⚠️ Missing — flagged for review", flagged: true, annotationId: 1 },
 ];
 
 export default function Hero() {
@@ -27,7 +27,6 @@ export default function Hero() {
           status="✓ Completed"
           fields={INTAKE_FIELDS}
           summary="3 of 4 fields extracted · 1 flagged"
-          annotation="check this"
         />
       </div>
     </section>

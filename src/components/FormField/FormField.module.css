@@ -6,6 +6,42 @@
   width: 100%;
 }
 
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(8 * var(--u));
+}
+
+.badge {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: calc(16 * var(--u));
+  height: calc(16 * var(--u));
+  border-radius: 999px;
+  background-color: var(--color-processing);
+  font-family: var(--font-mono);
+  font-size: calc(8 * var(--u));
+  line-height: 1;
+  color: #fff;
+  transform: scale(0);
+  animation: badge-in 450ms cubic-bezier(0.34, 1.56, 0.64, 1) 900ms forwards;
+}
+
+@keyframes badge-in {
+  to {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .badge {
+    animation: none;
+    transform: none;
+  }
+}
+
 .label {
   font-size: calc(10 * var(--u));
   line-height: calc(15 * var(--u));

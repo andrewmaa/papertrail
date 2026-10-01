@@ -26,14 +26,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .stack,
-  .annotation {
+  .stack {
     animation: none;
-  }
-
-  .annotation {
-    transform: rotate(-7deg);
-    opacity: 1;
   }
 }
 
@@ -87,39 +81,6 @@
   flex-direction: column;
   gap: calc(10 * var(--u));
   padding-top: calc(12 * var(--u));
-}
-
-.annotation {
-  position: absolute;
-  right: calc(26 * var(--u));
-  bottom: calc(34 * var(--u));
-  z-index: 1;
-  margin: 0;
-  padding: calc(3 * var(--u)) calc(7 * var(--u));
-  color: var(--color-ink-strong);
-  font-family: var(--font-hand, cursive);
-  font-size: calc(14 * var(--u));
-  line-height: 1;
-  transform: rotate(-7deg) translateY(8px);
-  opacity: 0;
-  animation: annotation-in 700ms cubic-bezier(0.22, 1, 0.36, 1) 900ms forwards;
-}
-
-.annotation::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border: 1px solid currentColor;
-  border-radius: 48% 52% 45% 55%;
-  transform: rotate(2deg);
-  opacity: 0.65;
-}
-
-@keyframes annotation-in {
-  to {
-    transform: rotate(-7deg) translateY(0);
-    opacity: 1;
-  }
 }
 
 .footer {

@@ -7,10 +7,9 @@ type FormScanCardProps = {
   status: string;
   fields: FormFieldProps[];
   summary: string;
-  annotation?: string;
 };
 
-export default function FormScanCard({ title, status, fields, summary, annotation }: FormScanCardProps) {
+export default function FormScanCard({ title, status, fields, summary }: FormScanCardProps) {
   return (
     <div className={styles.stack}>
       <div className={styles.backSheet} aria-hidden="true" />
@@ -24,7 +23,6 @@ export default function FormScanCard({ title, status, fields, summary, annotatio
             <FormField key={field.label} {...field} />
           ))}
         </div>
-        {annotation ? <p className={styles.annotation}>{annotation}</p> : null}
         <footer className={styles.footer}>
           <span className={styles.dot} aria-hidden="true" />
           <p className={styles.summary}>{summary}</p>

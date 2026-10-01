@@ -1,5 +1,5 @@
 .stack {
-  --u: var(--card-unit, 1.3934px);
+  --u: clamp(0.62px, min(0.09vw, 0.118svh), 1.35px);
 
   position: relative;
   width: calc(412 * var(--u));
@@ -77,4 +77,10 @@
   letter-spacing: var(--tracking);
   color: var(--color-text);
   white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+  .stack {
+    --u: clamp(0.62px, calc((100vw - 48px) / 412), 1.2px);
+  }
 }

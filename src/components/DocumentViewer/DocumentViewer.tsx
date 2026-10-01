@@ -86,11 +86,6 @@ export default function DocumentViewer({ record, onClose }: DocumentViewerProps)
 
   const extracted = fields.length;
 
-  const startEditing = () => {
-    setDraft(fields);
-    setEditing(true);
-  };
-
   const cancelEditing = () => {
     setDraft(fields);
     setEditing(false);

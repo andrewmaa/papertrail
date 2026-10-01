@@ -11,8 +11,6 @@ type FormScanCardProps = {
 };
 
 export default function FormScanCard({ title, status, fields, summary, annotation }: FormScanCardProps) {
-
-export default function FormScanCard({ title, status, fields, summary, annotation }: FormScanCardProps) {
   return (
     <div className={styles.stack}>
       <div className={styles.backSheet} aria-hidden="true" />

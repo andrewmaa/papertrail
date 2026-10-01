@@ -8,6 +8,7 @@ import FilterSidebar, {
 } from "../../components/FilterSidebar/FilterSidebar";
 import NavBar from "../../components/NavBar/NavBar";
 import RecordCard from "../../components/RecordCard/RecordCard";
+import UploadModal from "../../components/UploadModal/UploadModal";
 import { RECORDS, type RecordDocument } from "../../data/records";
 import styles from "./DashboardPage.module.css";
 
@@ -38,6 +39,7 @@ export default function DashboardPage() {
   const [sort, setSort] = useState<SortOption>("Newest");
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [activeRecord, setActiveRecord] = useState<RecordDocument | null>(null);
+  const [uploadOpen, setUploadOpen] = useState(false);
 
   const typeCounts = useMemo(() => {
     const counts: Record<DocType, number> = {
@@ -124,7 +126,12 @@ export default function DashboardPage() {
               <p className={styles.breadcrumb}>Archive / All records</p>
               <h1 className={styles.title}>Your filing cabinet, in the cloud.</h1>
             </div>
-            <Button variant="primary" href="/upload" className={styles.upload}>
+            <Button
+              variant="primary"
+              className={styles.upload}
+              aria-haspopup="dialog"
+              onClick={() => setUploadOpen(true)}
+            >
               <span className={styles.uploadPlus} aria-hidden="true">
                 +
               </span>
@@ -170,6 +177,8 @@ export default function DashboardPage() {
       {activeRecord ? (
         <DocumentViewer record={activeRecord} onClose={() => setActiveRecord(null)} />
       ) : null}
+
+      {uploadOpen ? <UploadModal onClose={() => setUploadOpen(false)} /> : null}
     </div>
   );
 }

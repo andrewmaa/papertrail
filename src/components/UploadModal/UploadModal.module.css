@@ -29,7 +29,7 @@
   overscroll-behavior: contain;
   background-color: var(--color-paper);
   border: 2px solid var(--color-ink-strong);
-  border-radius: 24px;
+  border-radius: var(--radius-md);
   box-shadow: 6px 8px 0 rgba(26, 20, 16, 0.12);
   opacity: 0;
   transform: translateY(18px) scale(0.96);

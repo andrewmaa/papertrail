@@ -87,6 +87,10 @@
   color: var(--color-ink);
 }
 
+.titleLine {
+  display: block;
+}
+
 .check {
   flex-shrink: 0;
   width: 22px;

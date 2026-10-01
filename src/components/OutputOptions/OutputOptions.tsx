@@ -54,7 +54,13 @@ export default function OutputOptions({ value, onChange }: OutputOptionsProps) {
               />
               <span className={styles.header}>
                 <span className={styles.radio} aria-hidden="true" />
-                <span className={styles.title}>{option.title}</span>
+                <span className={styles.title}>
+                  {option.title.split(" ").map((word) => (
+                    <span key={word} className={styles.titleLine}>
+                      {word}
+                    </span>
+                  ))}
+                </span>
                 {checked ? <img src={checkIcon} alt="" className={styles.check} /> : null}
               </span>
               <span className={styles.description}>{option.description}</span>

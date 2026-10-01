@@ -140,7 +140,6 @@ export default function DocumentViewer({ record, onClose }: DocumentViewerProps)
               </p>
             </div>
             <span className={`${styles.completion} ${styles[tone]}`}>
-              {record.completionLabel === "Completed" ? "✓ " : ""}
               {record.completionLabel}
             </span>
           </header>

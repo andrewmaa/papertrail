@@ -24,7 +24,7 @@ export default function Hero() {
       <div className={styles.illustration}>
         <FormScanCard
           title="Patient Intake Form"
-          status="✓ Completed"
+          status="Completed"
           fields={INTAKE_FIELDS}
           summary="3 of 4 fields extracted · 1 flagged"
         />

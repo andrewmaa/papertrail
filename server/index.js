@@ -16,23 +16,10 @@ const DOC_TYPES = new Set(["Invoice", "Contract", "Medical", "Tax", "Letter"]);
 
 const app = express();
 
-const corsOrigins = (process.env.CORS_ORIGIN ?? "")
-  .split(",")
-  .map((value) => value.trim())
-  .filter(Boolean);
-
 app.use((req, res, next) => {
   const origin = req.headers.origin;
-  if (!origin) {
-    next();
-    return;
-  }
-  const allow =
-    corsOrigins.length === 0
-      ? true
-      : corsOrigins.includes(origin) || corsOrigins.includes("*");
-  if (allow) {
-    res.setHeader("Access-Control-Allow-Origin", corsOrigins.includes("*") ? "*" : origin);
+  if (origin) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
     res.setHeader("Vary", "Origin");
     res.setHeader("Access-Control-Allow-Methods", "GET,POST,DELETE,OPTIONS");
     res.setHeader(

@@ -55,9 +55,7 @@ export default function DashboardPage() {
           payload = JSON.parse(raw) as RecordDocument[] | { error?: string };
         } catch {
           throw new Error(
-            response.ok
-              ? "Invalid response from records API"
-              : "API server unreachable — run npm run dev with DATABASE_URL set",
+            "API server unreachable — set VITE_API_URL on Vercel to https://papertrail-production-8139.up.railway.app and redeploy",
           );
         }
         if (!response.ok) {

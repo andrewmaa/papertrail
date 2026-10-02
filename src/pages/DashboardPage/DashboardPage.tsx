@@ -10,6 +10,9 @@ import FilterSidebar, {
 import NavBar from "../../components/NavBar/NavBar";
 import RecordCard from "../../components/RecordCard/RecordCard";
 import UploadModal from "../../components/UploadModal/UploadModal";
+import WelcomeTutorial, {
+  TUTORIAL_STORAGE_KEY,
+} from "../../components/WelcomeTutorial/WelcomeTutorial";
 import { type RecordDocument } from "../../data/records";
 import { apiUrl, withApiAssetUrls } from "../../lib/api";
 import { exportRecordsAsCsv } from "../../lib/exportRecords";
@@ -41,6 +44,13 @@ export default function DashboardPage() {
   const [activeRecord, setActiveRecord] = useState<RecordDocument | null>(null);
   const [uploadOpen, setUploadOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [tutorialOpen, setTutorialOpen] = useState(() => {
+    try {
+      return window.localStorage.getItem(TUTORIAL_STORAGE_KEY) !== "1";
+    } catch {
+      return true;
+    }
+  });
 
   useEffect(() => {
     let cancelled = false;
@@ -239,7 +249,17 @@ export default function DashboardPage() {
 
         <main className={styles.main}>
           <header className={styles.header}>
-            <p className={styles.breadcrumb}>Archive / All records</p>
+            <div className={styles.breadcrumbRow}>
+              <p className={styles.breadcrumb}>Archive / All records</p>
+              <button
+                type="button"
+                className={styles.tourLink}
+                aria-haspopup="dialog"
+                onClick={() => setTutorialOpen(true)}
+              >
+                Take the tour
+              </button>
+            </div>
             <div className={styles.titleRow}>
               <h1 className={styles.title}>Your filing cabinet, in the cloud.</h1>
               <div className={styles.actions}>
@@ -359,6 +379,13 @@ export default function DashboardPage() {
           onProcessing={addRecord}
           onCreated={updateRecord}
           onFailed={removeRecord}
+        />
+      ) : null}
+
+      {tutorialOpen ? (
+        <WelcomeTutorial
+          onClose={() => setTutorialOpen(false)}
+          onStartUpload={() => setUploadOpen(true)}
         />
       ) : null}
     </div>

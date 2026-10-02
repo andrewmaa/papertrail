@@ -52,9 +52,37 @@
   letter-spacing: var(--tracking);
   text-transform: uppercase;
   color: var(--color-muted);
+  }
+
+.breadcrumbRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
 }
 
-.titleRow {
+.tourLink {
+  padding: 2px 0;
+  border: 0;
+  background: none;
+  font-size: 13px;
+  letter-spacing: var(--tracking);
+  color: var(--color-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.tourLink:hover {
+  color: var(--color-ink-strong);
+}
+
+.tourLink:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
+  .titleRow {
   display: flex;
   align-items: center;
   justify-content: space-between;

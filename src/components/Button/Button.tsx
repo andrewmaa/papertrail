@@ -1,4 +1,4 @@
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithRef } from "react";
 import styles from "./Button.module.css";
 
 type ButtonVariant = "primary" | "outline" | "danger" | "inverse" | "inverseOutline";
@@ -6,7 +6,7 @@ type ButtonVariant = "primary" | "outline" | "danger" | "inverse" | "inverseOutl
 type ButtonProps = {
   variant?: ButtonVariant;
   href?: string;
-} & ComponentPropsWithoutRef<"button">;
+} & ComponentPropsWithRef<"button">;
 
 export default function Button({
   variant = "primary",

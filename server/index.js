@@ -2,11 +2,52 @@ import "dotenv/config";
 import express from "express";
 import multer from "multer";
 import Anthropic from "@anthropic-ai/sdk";
+import {
+  initDb,
+  listRecords,
+  getRecordById,
+  getPageById,
+  insertRecordWithPages,
+  deleteRecordsByIds,
+} from "./db.js";
 
 const PORT = Number(process.env.PORT) || 3001;
 const DOC_TYPES = new Set(["Invoice", "Contract", "Medical", "Tax", "Letter"]);
 
 const app = express();
+
+const corsOrigins = (process.env.CORS_ORIGIN ?? "")
+  .split(",")
+  .map((value) => value.trim())
+  .filter(Boolean);
+
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (!origin) {
+    next();
+    return;
+  }
+  const allow =
+    corsOrigins.length === 0
+      ? true
+      : corsOrigins.includes(origin) || corsOrigins.includes("*");
+  if (allow) {
+    res.setHeader("Access-Control-Allow-Origin", corsOrigins.includes("*") ? "*" : origin);
+    res.setHeader("Vary", "Origin");
+    res.setHeader("Access-Control-Allow-Methods", "GET,POST,DELETE,OPTIONS");
+    res.setHeader(
+      "Access-Control-Allow-Headers",
+      "Content-Type, Authorization, anthropic-workspace-id",
+    );
+  }
+  if (req.method === "OPTIONS") {
+    res.status(204).end();
+    return;
+  }
+  next();
+});
+
+app.use(express.json({ limit: "1mb" }));
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024, files: 8 },
@@ -84,6 +125,71 @@ app.get("/api/health", (_req, res) => {
   res.json({ ok: true });
 });
 
+app.get("/api/records", async (_req, res) => {
+  try {
+    const records = await listRecords();
+    res.json(records);
+  } catch (error) {
+    console.error("list records error:", error);
+    res.status(500).json({
+      error: error instanceof Error ? error.message : "Failed to list records",
+    });
+  }
+});
+
+app.get("/api/records/:id", async (req, res) => {
+  try {
+    const record = await getRecordById(req.params.id);
+    if (!record) return res.status(404).json({ error: "Record not found" });
+    res.json(record);
+  } catch (error) {
+    console.error("get record error:", error);
+    res.status(500).json({
+      error: error instanceof Error ? error.message : "Failed to get record",
+    });
+  }
+});
+
+
+app.delete("/api/records", async (req, res) => {
+  try {
+    const ids = Array.isArray(req.body?.ids)
+      ? req.body.ids.filter((id) => typeof id === "string" && id.trim())
+      : [];
+    if (ids.length === 0) {
+      return res.status(400).json({ error: "Provide at least one record id" });
+    }
+    const deleted = await deleteRecordsByIds(ids);
+    res.json({ deleted });
+  } catch (error) {
+    console.error("delete records error:", error);
+    res.status(500).json({
+      error: error instanceof Error ? error.message : "Failed to delete records",
+    });
+  }
+});
+
+app.get("/api/pages/:id", async (req, res) => {
+  try {
+    const page = await getPageById(req.params.id);
+    if (!page) return res.status(404).json({ error: "Page not found" });
+    res.setHeader("Content-Type", page.mime_type);
+    res.setHeader("Cache-Control", "private, max-age=3600");
+    if (page.filename) {
+      res.setHeader(
+        "Content-Disposition",
+        `inline; filename="${String(page.filename).replace(/"/g, "")}"`,
+      );
+    }
+    res.send(page.data);
+  } catch (error) {
+    console.error("get page error:", error);
+    res.status(500).json({
+      error: error instanceof Error ? error.message : "Failed to get page",
+    });
+  }
+});
+
 app.post("/api/detect-language", (req, res) => {
   upload.single("file")(req, res, async (err) => {
     if (err) {
@@ -101,7 +207,7 @@ app.post("/api/detect-language", (req, res) => {
       }
 
       const message = await anthropic.messages.create({
-        model: "claude-sonnet-4-5",
+        model: "claude-haiku-4-5",
         max_tokens: 256,
         messages: [
           {
@@ -175,6 +281,11 @@ app.post("/api/process", (req, res) => {
         ? req.body.preference
         : "english";
 
+      const requestedId =
+        typeof req.body?.recordId === "string" && /^PT-\d{4}$/.test(req.body.recordId)
+          ? req.body.recordId
+          : nextRecordId();
+
       const imageBlocks = files.map((file) => ({
         type: "image",
         source: {
@@ -185,7 +296,7 @@ app.post("/api/process", (req, res) => {
       }));
 
       const message = await anthropic.messages.create({
-        model: "claude-sonnet-4-5",
+        model: "claude-haiku-4-5",
         max_tokens: 2048,
         messages: [
           {
@@ -220,15 +331,17 @@ app.post("/api/process", (req, res) => {
             }))
         : [];
 
-      const id = nextRecordId();
       const record = {
-        id,
+        id: requestedId,
         type,
-        title: typeof parsed.title === "string" && parsed.title.trim()
-          ? parsed.title.trim()
-          : files[0].originalname.replace(/\.[^.]+$/, ""),
+        title:
+          typeof parsed.title === "string" && parsed.title.trim()
+            ? parsed.title.trim()
+            : files[0].originalname.replace(/\.[^.]+$/, ""),
         status: "Digitized",
-        pages: Number.isFinite(Number(parsed.pages)) ? Math.max(1, Math.round(Number(parsed.pages))) : files.length,
+        pages: Number.isFinite(Number(parsed.pages))
+          ? Math.max(1, Math.round(Number(parsed.pages)))
+          : files.length,
         box: "00",
         completionLabel: "Completed",
         fields,
@@ -238,7 +351,8 @@ app.post("/api/process", (req, res) => {
         confidence: typeof parsed.confidence === "string" ? parsed.confidence : "—",
       };
 
-      return res.json(record);
+      const saved = await insertRecordWithPages(record, files);
+      return res.json(saved);
     } catch (error) {
       console.error("process error:", error);
       return res.status(502).json({
@@ -248,6 +362,7 @@ app.post("/api/process", (req, res) => {
   });
 });
 
+await initDb();
 app.listen(PORT, () => {
   console.log(`Papertrail API listening on http://localhost:${PORT}`);
 });

@@ -16,8 +16,11 @@ export default function CtaSection() {
         <Button variant="inverseOutline" href="#how-it-works">
           How it Works
         </Button>
-        <Button variant="inverse" href="#demo">
+        {/* <Button variant="inverse" href="#demo">
           Request a Demo
+        </Button> */}
+        <Button variant="inverse" href="/dashboard">
+          Try it out
         </Button>
       </div>
     </SectionPanel>

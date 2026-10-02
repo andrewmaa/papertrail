@@ -4,6 +4,7 @@ import Dropzone from "../Dropzone/Dropzone";
 import LanguageCard from "../LanguageCard/LanguageCard";
 import OutputOptions, { type OutputPreference } from "../OutputOptions/OutputOptions";
 import type { RecordDocument } from "../../data/records";
+import { apiUrl } from "../../lib/api";
 import styles from "./UploadModal.module.css";
 
 const CLOSE_DURATION_MS = 280;
@@ -38,7 +39,6 @@ function placeholderRecord(files: File[], documentId: string): RecordDocument {
     fields: [],
     annotations: [],
     comments: [],
-    sourcePreviewUrl: files[0] ? URL.createObjectURL(files[0]) : undefined,
   };
 }
 
@@ -137,7 +137,7 @@ export default function UploadModal({
 
     void (async () => {
       try {
-        const response = await fetch("/api/detect-language", {
+        const response = await fetch(apiUrl("/api/detect-language"), {
           method: "POST",
           body,
           signal: controller.signal,
@@ -192,9 +192,10 @@ export default function UploadModal({
     const body = new FormData();
     for (const file of files) body.append("files", file);
     body.append("preference", preference);
+    body.append("recordId", documentId);
 
     try {
-      const response = await fetch("/api/process", {
+      const response = await fetch(apiUrl("/api/process"), {
         method: "POST",
         body,
       });
@@ -218,7 +219,6 @@ export default function UploadModal({
         id: pending.id,
         language: payload.language ?? detected?.language,
         confidence: payload.confidence ?? detected?.confidence,
-        sourcePreviewUrl: pending.sourcePreviewUrl,
       };
       onCreated(digitized);
       submittingRef.current = false;
@@ -265,10 +265,9 @@ export default function UploadModal({
           {files.length > 0 ? (
             <>
               <LanguageCard
-                language={
-                  detecting ? "Detecting…" : detected?.language ?? (detectError ? "Unknown" : "Detecting…")
-                }
-                confidence={detecting ? "…" : detected?.confidence ?? "—"}
+                detecting={detecting || (!detected && !detectError)}
+                language={detected?.language ?? (detectError ? "Unknown" : "")}
+                confidence={detected?.confidence ?? "—"}
                 documentId={documentId}
               />
               {detectError ? (

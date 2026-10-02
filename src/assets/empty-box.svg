@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="140" viewBox="0 0 160 140" fill="none" aria-hidden="true">
+  <path d="M20 48L80 20L140 48L80 76L20 48Z" stroke="#4B423C" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M20 48V100L80 128V76" stroke="#4B423C" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M140 48V100L80 128" stroke="#4B423C" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M80 76V128" stroke="#4B423C" stroke-width="2" stroke-linejoin="round" opacity="0.45"/>
+  <path d="M38 56L80 36L122 56" stroke="#4B423C" stroke-width="1.5" stroke-linejoin="round" opacity="0.35"/>
+  <path d="M52 90H68" stroke="#4B423C" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
+  <path d="M52 100H78" stroke="#4B423C" stroke-width="2" stroke-linecap="round" opacity="0.28"/>
+</svg>

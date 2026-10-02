@@ -18,7 +18,8 @@
   gap: clamp(16px, 2vw, 50px);
   width: calc(100% - 2 * var(--page-gutter));
   margin: clamp(20px, 3vh, 54px) auto 0;
-  align-items: start;
+  align-items: stretch;
+  flex: 1 1 auto;
 }
 
 .sidebarSlot {
@@ -30,6 +31,7 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
+  min-height: calc(100svh - 120px);
   padding: clamp(20px, 2.5vw, 32px);
   background-color: var(--color-paper);
   border: 2px solid var(--color-ink);
@@ -38,15 +40,10 @@
 
 .header {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 20px;
+  flex-direction: column;
+  gap: 12px;
   padding-bottom: 20px;
   border-bottom: 1px solid var(--color-border-soft);
-}
-
-.headerCopy {
-  min-width: 0;
 }
 
 .breadcrumb {
@@ -57,8 +54,17 @@
   color: var(--color-muted);
 }
 
+.titleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  min-width: 0;
+}
+
 .title {
-  margin: 12px 0 0;
+  margin: 0;
+  min-width: 0;
   font-size: clamp(24px, 2.6vw, 34px);
   font-weight: 400;
   line-height: 1.05;
@@ -69,7 +75,8 @@
 .actions {
   display: flex;
   flex-shrink: 0;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  align-items: center;
   justify-content: flex-end;
   gap: 10px;
 }
@@ -148,6 +155,51 @@
   color: var(--color-muted);
 }
 
+.emptyState {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0;
+  padding: 16px 16px;
+  text-align: center;
+}
+
+.emptyArt {
+  display: block;
+  width: min(128px, 36vw);
+  height: auto;
+  margin-bottom: 4px;
+  opacity: 0.9;
+}
+
+.emptyTitle {
+  margin: 0;
+  font-size: clamp(16px, 1.5vw, 19px);
+  line-height: 1.25;
+  letter-spacing: var(--tracking);
+  color: var(--color-ink);
+}
+
+.emptyCopy {
+  margin: 0;
+  max-width: 34ch;
+  font-size: 13px;
+  line-height: 1.4;
+  letter-spacing: var(--tracking);
+  color: var(--color-muted);
+}
+
+.emptyAction {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  height: 40px;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -213,20 +265,17 @@
     display: block;
   }
 
-  .header {
+  .titleRow {
     flex-wrap: wrap;
   }
 
   .actions {
+    flex-wrap: wrap;
     width: 100%;
   }
 
   .action {
     flex: 1 1 auto;
-  }
-
-  .upload {
-    flex-basis: 100%;
   }
 }
 

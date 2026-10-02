@@ -120,11 +120,14 @@ export default function NavBar({ search }: NavBarProps) {
             ))}
           </ul>
           <div className={styles.actions}>
-            <Button variant="outline" href="/dashboard" className={styles.action}>
+            {/* <Button variant="outline" href="/dashboard" className={styles.action}>
               Login
             </Button>
             <Button variant="primary" href="#demo" className={`${styles.action} ${styles.demo}`}>
               Request a Demo
+            </Button> */}
+            <Button variant="primary" href="/dashboard" className={`${styles.action} ${styles.demo}`}>
+              Try it out
             </Button>
           </div>
         </div>

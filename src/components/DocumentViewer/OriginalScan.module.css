@@ -16,6 +16,28 @@
   margin: 0;
 }
 
+.uploadFrame {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  overflow: auto;
+  padding: 8px;
+  border: 1px solid rgba(26, 20, 16, 0.14);
+  border-radius: 6px;
+  background-color: #1a1410;
+}
+
+.uploadImage {
+  display: block;
+  max-width: 100%;
+  max-height: min(62vh, 720px);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
 .paper {
   position: relative;
   display: flex;

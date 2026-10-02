@@ -46,6 +46,20 @@
   background-color: #f3efe7;
 }
 
+.danger {
+  background-color: var(--color-paper-warm);
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+
+.danger:hover {
+  background-color: rgba(255, 128, 128, 0.1);
+}
+
+.danger:focus-visible {
+  outline-color: var(--color-danger);
+}
+
 .inverse {
   background-color: var(--color-paper-warm);
   border-color: var(--color-paper-warm);

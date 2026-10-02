@@ -208,7 +208,7 @@
 
 .fields {
   --field-height: 82px;
-  --visible-fields: 6;
+  --visible-fields: 4;
   display: flex;
   flex-direction: column;
   flex: none;

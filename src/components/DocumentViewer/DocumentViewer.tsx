@@ -146,8 +146,14 @@ export default function DocumentViewer({ record, onClose }: DocumentViewerProps)
               type="button"
               className={`${styles.tool} ${styles.toolActive}`}
               aria-pressed={editing}
-              disabled={showOriginal}
-              onClick={editing ? cancelEditing : startEditing}
+              onClick={() => {
+                if (editing) {
+                  cancelEditing();
+                  return;
+                }
+                setShowOriginal(false);
+                startEditing();
+              }}
             >
               <img
                 src={editIcon}

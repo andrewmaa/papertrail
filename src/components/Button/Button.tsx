@@ -1,7 +1,7 @@
 import type { ComponentPropsWithoutRef } from "react";
 import styles from "./Button.module.css";
 
-type ButtonVariant = "primary" | "outline" | "inverse" | "inverseOutline";
+type ButtonVariant = "primary" | "outline" | "danger" | "inverse" | "inverseOutline";
 
 type ButtonProps = {
   variant?: ButtonVariant;

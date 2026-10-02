@@ -179,21 +179,179 @@
   letter-spacing: 0;
   white-space: nowrap;
   transform: translateX(-50%);
-  animation: dropIn 1600ms cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  animation: dragFile 4.8s cubic-bezier(0.22, 1, 0.36, 1) infinite;
 }
 
-@keyframes dropIn {
+.dragCursor {
+  position: absolute;
+  right: 22px;
+  bottom: -18px;
+  width: 28px;
+  height: 28px;
+  transform-origin: 20% 10%;
+  filter: drop-shadow(1px 2px 0 rgba(26, 20, 16, 0.18));
+  animation: dragCursor 4.8s ease-in-out infinite;
+}
+
+@keyframes dragCursor {
+  0%,
+  36% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(0.82);
+  }
+  44%,
+  100% {
+    transform: scale(1);
+  }
+}
+
+.dropzone {
+  animation: dropzoneActive 4.8s ease-in-out infinite;
+}
+
+@keyframes dropzoneActive {
+  0%,
+  20%,
+  46%,
+  100% {
+    border-color: var(--color-dot);
+    background-color: var(--color-cream);
+  }
+  26%,
+  40% {
+    border-color: var(--color-ink-strong);
+    background-color: var(--color-paper-warm);
+  }
+}
+
+@keyframes dragFile {
   0% {
-    transform: translate(10%, -140%) rotate(6deg);
+    transform: translate(40%, -260%) rotate(8deg);
     opacity: 0;
   }
-  35% {
+  8% {
     opacity: 1;
   }
-  60%,
-  100% {
-    transform: translate(-50%, 0) rotate(0);
+  28% {
+    transform: translate(-50%, -120%) rotate(-3deg) scale(1.04);
     opacity: 1;
+  }
+  40% {
+    transform: translate(-50%, 0) rotate(0) scale(1);
+    opacity: 1;
+  }
+  46%,
+  100% {
+    transform: translate(-50%, 0) scale(0.9);
+    opacity: 0;
+  }
+}
+
+.uploadedFile {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: max-content;
+  padding: 8px 12px 12px;
+  border: 1px solid var(--color-ink);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-paper);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  opacity: 0;
+  animation: uploadedFile 4.8s ease-out infinite;
+}
+
+@keyframes uploadedFile {
+  0%,
+  42% {
+    opacity: 0;
+  }
+  48%,
+  92% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.uploadBar {
+  position: absolute;
+  right: 12px;
+  bottom: 5px;
+  left: 12px;
+  height: 3px;
+  overflow: hidden;
+  border-radius: 999px;
+  background-color: var(--color-border-soft);
+}
+
+.uploadBarFill {
+  display: block;
+  width: 0;
+  height: 100%;
+  background-color: var(--color-digitized);
+  animation: uploadBar 4.8s ease-in-out infinite;
+}
+
+@keyframes uploadBar {
+  0%,
+  46% {
+    width: 0;
+  }
+  70%,
+  100% {
+    width: 100%;
+  }
+}
+
+.metaChip {
+  opacity: 0;
+  animation: metaChip 4.8s ease-out infinite;
+}
+
+.metaChip[data-delay] {
+  animation-name: metaChipLate;
+}
+
+@keyframes metaChip {
+  0%,
+  70% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  76%,
+  92% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes metaChipLate {
+  0%,
+  75% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  81%,
+  92% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
   }
 }
 
@@ -274,7 +432,22 @@
   }
 }
 
+.statusCard {
+  transition:
+    border-color 300ms ease,
+    box-shadow 300ms ease;
+}
+
+.statusCard[data-tone="processing"] {
+  box-shadow: 4px 5px 0 rgba(26, 20, 16, 0.18);
+}
+
+.statusCard[data-tone="queued"] .statusTitle {
+  color: var(--color-muted);
+}
+
 .thumb {
+  position: relative;
   flex-shrink: 0;
   width: 48px;
   height: 60px;
@@ -291,6 +464,25 @@
 .thumb .line,
 .thumb .lineStrong {
   height: 3px;
+}
+
+.scanLine {
+  position: absolute;
+  right: 0;
+  left: 0;
+  height: 2px;
+  background-color: var(--color-processing);
+  box-shadow: 0 0 8px var(--color-processing);
+  animation: scan 1.1s ease-in-out infinite alternate;
+}
+
+@keyframes scan {
+  from {
+    top: 4px;
+  }
+  to {
+    top: calc(100% - 6px);
+  }
 }
 
 .statusBody {
@@ -323,6 +515,14 @@
   border-radius: 999px;
   background-color: var(--color-paper-warm);
   font-size: 13px;
+  animation: pillSwap 320ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes pillSwap {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
 }
 
 .progressTrack {
@@ -339,16 +539,7 @@
   height: 100%;
   border-radius: inherit;
   background-color: var(--color-digitized);
-  animation: fill 2.4s ease-in-out infinite alternate;
-}
-
-@keyframes fill {
-  from {
-    width: 20%;
-  }
-  to {
-    width: 92%;
-  }
+  transition: width 500ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* Search */

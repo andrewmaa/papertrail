@@ -1,7 +1,6 @@
+import { useEffect, useState } from "react";
 import logoMark from "../../assets/logo-mark.svg";
 import editIcon from "../../assets/icons/edit.svg";
-import notesIcon from "../../assets/icons/notes.svg";
-import originalIcon from "../../assets/icons/original.svg";
 import shareIcon from "../../assets/icons/share.svg";
 import styles from "./TutorialVisuals.module.css";
 
@@ -56,48 +55,99 @@ export function UploadVisual() {
         <div className={styles.dragFile}>
           <span className={styles.fileBadge}>PDF</span>
           lease-agreement.pdf
+          <svg
+            className={styles.dragCursor}
+            viewBox="0 0 24 24"
+            width="22"
+            height="22"
+            aria-hidden="true"
+          >
+            <path
+              d="M5 3L19 11.5L12.5 13L9.5 19.5L5 3Z"
+              fill="var(--color-ink-strong)"
+              stroke="var(--color-paper)"
+              strokeWidth="1.5"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </div>
+        <div className={styles.uploadedFile}>
+          <span className={styles.fileBadge}>PDF</span>
+          lease-agreement.pdf
+          <span className={styles.uploadBar}>
+            <span className={styles.uploadBarFill} />
+          </span>
         </div>
       </div>
       <div className={styles.uploadMeta}>
-        <span className={styles.chip}>
+        <span className={`${styles.chip} ${styles.metaChip}`}>
           <span className={styles.dot} data-tone="digitized" /> Detected: English
         </span>
-        <span className={styles.chip}>Output: Structured fields</span>
+        <span className={`${styles.chip} ${styles.metaChip}`} data-delay="">
+          Output: Structured fields
+        </span>
       </div>
     </div>
   );
 }
 
-const STATUS_ROWS = [
-  { title: "Invoice #4471", tone: "queued", label: "Queued" },
-  { title: "Lease agreement", tone: "processing", label: "Processing" },
-  { title: "Tax return 2023", tone: "digitized", label: "Digitized" },
-] as const;
+const STATUS_TITLES = ["Invoice #4471", "Lease agreement", "Tax return 2023"];
+const STATUS_LABELS = { queued: "Queued", processing: "Processing", digitized: "Digitized" };
+const STATUS_TICKS = 7;
+const STATUS_TICK_MS = 1100;
+
+function statusFor(tick: number, index: number): keyof typeof STATUS_LABELS {
+  if (tick <= index) return "queued";
+  if (tick <= index + 2) return "processing";
+  return "digitized";
+}
+
+function useLoopingTick(length: number, intervalMs: number) {
+  const [tick, setTick] = useState(0);
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setTick(length - 1);
+      return;
+    }
+    const id = window.setInterval(() => setTick((value) => (value + 1) % length), intervalMs);
+    return () => window.clearInterval(id);
+  }, [length, intervalMs]);
+  return tick;
+}
 
 export function StatusVisual() {
+  const tick = useLoopingTick(STATUS_TICKS, STATUS_TICK_MS);
+  const statuses = STATUS_TITLES.map((_, index) => statusFor(tick, index));
+  const done = statuses.filter((status) => status === "digitized").length;
+
   return (
     <div className={styles.statusStack}>
-      {STATUS_ROWS.map((row, index) => (
-        <div
-          key={row.title}
-          className={styles.statusCard}
-          style={{ animationDelay: `${index * 120}ms` }}
-        >
-          <div className={styles.thumb}>
-            <Sheet lines={3} />
+      {STATUS_TITLES.map((title, index) => {
+        const tone = statuses[index];
+        return (
+          <div
+            key={title}
+            className={styles.statusCard}
+            data-tone={tone}
+            style={{ animationDelay: `${index * 120}ms` }}
+          >
+            <div className={styles.thumb}>
+              <Sheet lines={3} />
+              {tone === "processing" && <span className={styles.scanLine} />}
+            </div>
+            <div className={styles.statusBody}>
+              <span className={styles.statusTitle}>{title}</span>
+              <span className={styles.statusMeta}>3 pages · Box A-12</span>
+            </div>
+            <span key={tone} className={styles.statusPill} data-tone={tone}>
+              <span className={styles.dot} data-tone={tone} />
+              {STATUS_LABELS[tone]}
+            </span>
           </div>
-          <div className={styles.statusBody}>
-            <span className={styles.statusTitle}>{row.title}</span>
-            <span className={styles.statusMeta}>3 pages · Box A-12</span>
-          </div>
-          <span className={styles.statusPill} data-tone={row.tone}>
-            <span className={styles.dot} data-tone={row.tone} />
-            {row.label}
-          </span>
-        </div>
-      ))}
+        );
+      })}
       <div className={styles.progressTrack} aria-hidden="true">
-        <span className={styles.progressFill} />
+        <span className={styles.progressFill} style={{ width: `${(done / 3) * 100}%` }} />
       </div>
     </div>
   );
@@ -157,11 +207,40 @@ export function SearchVisual() {
   );
 }
 
+function OriginalIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 17.6775 17.6775" fill="none" aria-hidden="true">
+      <path
+        d="M10.3 2.2H4.6C4.0 2.2 3.5 2.7 3.5 3.3V14.4C3.5 15.0 4.0 15.5 4.6 15.5H13.1C13.7 15.5 14.2 15.0 14.2 14.4V6.1L10.3 2.2Z"
+        stroke="currentColor"
+        strokeWidth="1.32581"
+        strokeLinejoin="round"
+      />
+      <path d="M10.1 2.4V6.3H14" stroke="currentColor" strokeWidth="1.32581" strokeLinejoin="round" />
+      <path d="M6.1 9.3H11.6M6.1 12.1H9.9" stroke="currentColor" strokeWidth="1.32581" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function NotesIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 17.6775 17.6775" fill="none" aria-hidden="true">
+      <path
+        d="M15.4679 8.83876C15.4624 9.84198 15.2008 10.8272 14.7079 11.701C14.2151 12.5748 13.5073 13.3083 12.6516 13.8321C11.796 14.3558 10.8207 14.6524 9.81836 14.6937C8.81599 14.7351 7.81965 14.5198 6.92375 14.0684L2.20974 15.4678L3.60921 10.7538C3.48347 9.97518 3.51232 9.17938 3.69413 8.41188C3.87593 7.64438 4.20712 6.92021 4.6688 6.2807C5.13047 5.6412 5.71359 5.09889 6.38485 4.68474C7.05611 4.27059 7.80237 3.9927 8.58102 3.86696C9.35967 3.74121 10.1555 3.77007 10.923 3.95187C11.6905 4.13368 12.4146 4.46487 13.0541 4.92654C13.6937 5.38822 14.236 5.97133 14.6501 6.64259C15.0643 7.31385 15.3421 8.06011 15.4679 8.83876Z"
+        stroke="currentColor"
+        strokeWidth="1.32581"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 const REVIEW_TOOLS = [
-  { icon: editIcon, label: "Edit" },
-  { icon: originalIcon, label: "Original" },
-  { icon: notesIcon, label: "Notes" },
-  { icon: shareIcon, label: "Share" },
+  { label: "Edit", icon: <img src={editIcon} alt="" width={16} height={16} /> },
+  { label: "Original", icon: <OriginalIcon /> },
+  { label: "Notes", icon: <NotesIcon /> },
+  { label: "Share", icon: <img src={shareIcon} alt="" width={16} height={16} /> },
 ];
 
 const REVIEW_FIELDS = [
@@ -194,7 +273,7 @@ export function ReviewVisual() {
       <div className={styles.toolbar}>
         {REVIEW_TOOLS.map((tool) => (
           <span key={tool.label} className={styles.tool}>
-            <img src={tool.icon} alt="" width={16} height={16} />
+            {tool.icon}
             {tool.label}
           </span>
         ))}

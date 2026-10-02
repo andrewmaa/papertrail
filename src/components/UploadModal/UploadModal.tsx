@@ -149,13 +149,13 @@ export default function UploadModal({
             payload = JSON.parse(raw) as typeof payload;
           } catch {
             throw new Error(
-              response.ok
-                ? "Invalid response from language API"
-                : "API server unreachable — run npm run dev (starts web + API)",
+              "API server unreachable — set VITE_API_URL on Vercel to your Railway API URL",
             );
           }
         } else if (!response.ok) {
-          throw new Error("API server unreachable — run npm run dev (starts web + API)");
+          throw new Error(
+            "API server unreachable — set VITE_API_URL on Vercel to your Railway API URL",
+          );
         }
         if (!response.ok) {
           throw new Error(payload.error || "Language detection failed");
@@ -205,9 +205,7 @@ export default function UploadModal({
         payload = JSON.parse(raw) as RecordDocument & { error?: string };
       } catch {
         throw new Error(
-          response.ok
-            ? "Invalid response from processing API"
-            : "API server unreachable — run npm run dev (starts web + API)",
+          "API server unreachable — set VITE_API_URL on Vercel to your Railway API URL",
         );
       }
       if (!response.ok) {

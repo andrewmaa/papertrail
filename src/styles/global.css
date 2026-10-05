@@ -12,6 +12,7 @@
   --color-cream: #fffcf7;
   --color-canvas: #f6f4f0;
   --color-dot: #cfcac3;
+  --color-dot-active: #8f8477;
   --color-rule: #e8d5b0;
   --color-success: #4a7c59;
   --color-success-tint: rgba(74, 124, 89, 0.12);
@@ -68,6 +69,37 @@ body {
   background-size: 30px 30px;
   background-position: 15px 15px;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Fixed overlay of darker, larger dots revealed only around the cursor.
+   Its background is offset by scroll so it stays aligned with the body grid. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: radial-gradient(var(--color-dot-active) 1.8px, transparent 2.3px);
+  background-size: 30px 30px;
+  background-position: 15px calc(15px - var(--spotlight-scroll-y, 0px));
+  -webkit-mask-image: radial-gradient(
+    180px circle at var(--spotlight-x, -999px) var(--spotlight-y, -999px),
+    #000 0%,
+    rgba(0, 0, 0, 0.45) 45%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    180px circle at var(--spotlight-x, -999px) var(--spotlight-y, -999px),
+    #000 0%,
+    rgba(0, 0, 0, 0.45) 45%,
+    transparent 100%
+  );
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+:root[data-spotlight="on"] body::before {
+  opacity: 1;
 }
 
 p,

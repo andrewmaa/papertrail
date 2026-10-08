@@ -1,6 +1,158 @@
+@font-face {
+  font-family: "PP Nikkei Maru";
+  src: url("https://andrewma.b-cdn.net/fonts/papertrail/PPNikkeiMaru-Thin.woff2") format("woff2");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PP Nikkei Maru";
+  src: url("https://andrewma.b-cdn.net/fonts/papertrail/PPNikkeiMaru-ThinItalic.woff2") format("woff2");
+  font-weight: 100;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PP Nikkei Maru";
+  src: url("https://andrewma.b-cdn.net/fonts/papertrail/PPNikkeiMaru-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PP Nikkei Maru";
+  src: url("https://andrewma.b-cdn.net/fonts/papertrail/PPNikkeiMaru-LightItalic.woff2") format("woff2");
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PP Nikkei Maru";
+  src: url("https://andrewma.b-cdn.net/fonts/papertrail/PPNikkeiMaru-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PP Nikkei Maru";
+  src: url("https://andrewma.b-cdn.net/fonts/papertrail/PPNikkeiMaru-RegularItalic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PP Nikkei Maru";
+  src: url("https://andrewma.b-cdn.net/fonts/papertrail/PPNikkeiMaru-Ultrabold.woff2") format("woff2");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PP Nikkei Maru";
+  src: url("https://andrewma.b-cdn.net/fonts/papertrail/PPNikkeiMaru-UltraboldItalic.woff2") format("woff2");
+  font-weight: 800;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PP Nikkei Maru";
+  src: url("https://andrewma.b-cdn.net/fonts/papertrail/PPNikkeiMaru-Heavy.woff2") format("woff2");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PP Nikkei Maru";
+  src: url("https://andrewma.b-cdn.net/fonts/papertrail/PPNikkeiMaru-HeavyItalic.woff2") format("woff2");
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PP Right Grotesk Mono";
+  src: url("https://andrewma.b-cdn.net/fonts/papertrail/PPRightGroteskMono-Fine.woff2") format("woff2");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PP Right Grotesk Mono";
+  src: url("https://andrewma.b-cdn.net/fonts/papertrail/PPRightGroteskMono-FineItalic.woff2") format("woff2");
+  font-weight: 100;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PP Right Grotesk Mono";
+  src: url("https://andrewma.b-cdn.net/fonts/papertrail/PPRightGroteskMono-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PP Right Grotesk Mono";
+  src: url("https://andrewma.b-cdn.net/fonts/papertrail/PPRightGroteskMono-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PP Right Grotesk Mono";
+  src: url("https://andrewma.b-cdn.net/fonts/papertrail/PPRightGroteskMono-RegularItalic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PP Right Grotesk Mono";
+  src: url("https://andrewma.b-cdn.net/fonts/papertrail/PPRightGroteskMono-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PP Right Grotesk Mono";
+  src: url("https://andrewma.b-cdn.net/fonts/papertrail/PPRightGroteskMono-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PP Right Grotesk Mono";
+  src: url("https://andrewma.b-cdn.net/fonts/papertrail/PPRightGroteskMono-BoldItalic.woff2") format("woff2");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PP Right Grotesk Mono";
+  src: url("https://andrewma.b-cdn.net/fonts/papertrail/PPRightGroteskMono-Dark.woff2") format("woff2");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --font-sans: "PP Nikkei Maru", "Figtree", "Helvetica Neue", Arial, sans-serif;
-  --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+  --font-mono: "PP Right Grotesk Mono", "JetBrains Mono", "SFMono-Regular", Menlo, Consolas, monospace;
   --tracking: -0.03em;
 
   --color-ink: #4b423c;

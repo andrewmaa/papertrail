@@ -68,6 +68,7 @@
 }
 
 .subtitle {
+  font-family: var(--font-mono);
   font-size: clamp(14px, 1.15vw, 16px);
   line-height: 1.45;
   letter-spacing: var(--tracking);
@@ -114,6 +115,7 @@
 }
 
 .estimate {
+  font-family: var(--font-mono);
   font-size: 14px;
   letter-spacing: var(--tracking);
   color: #605650;

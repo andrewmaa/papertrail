@@ -47,6 +47,7 @@
 }
 
 .breadcrumb {
+  font-family: var(--font-mono);
   font-size: 11px;
   line-height: 16.5px;
   letter-spacing: var(--tracking);
@@ -161,6 +162,7 @@
 
 .statLabel {
   margin: 6px 0 0;
+  font-family: var(--font-mono);
   font-size: 11px;
   line-height: 16.5px;
   letter-spacing: var(--tracking);
@@ -170,6 +172,7 @@
 
 .showing {
   margin: 24px 0 0;
+  font-family: var(--font-mono);
   font-size: 12px;
   line-height: 18px;
   letter-spacing: var(--tracking);

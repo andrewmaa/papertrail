@@ -217,6 +217,7 @@
 
 .metaId,
 .metaType {
+  font-family: var(--font-mono);
   font-size: 11px;
   line-height: 16.5px;
   letter-spacing: var(--tracking);

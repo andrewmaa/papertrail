@@ -13,6 +13,7 @@
 }
 
 .eyebrow {
+  font-family: var(--font-mono);
   font-size: 13px;
   line-height: normal;
   letter-spacing: var(--tracking);

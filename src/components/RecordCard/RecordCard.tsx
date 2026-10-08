@@ -1,3 +1,4 @@
+import downloadIcon from "../../assets/icons/download.svg";
 import styles from "./RecordCard.module.css";
 
 export type RecordStatus = "Digitized" | "Processing" | "Queued";
@@ -12,6 +13,7 @@ export type RecordCardProps = {
   onOpen?: () => void;
   selected?: boolean;
   onToggleSelect?: () => void;
+  onDownload?: () => void;
 };
 
 const STATUS_TONE: Record<RecordStatus, string> = {
@@ -30,6 +32,7 @@ export default function RecordCard({
   onOpen,
   selected = false,
   onToggleSelect,
+  onDownload,
 }: RecordCardProps) {
   const tone = STATUS_TONE[status];
 
@@ -81,6 +84,17 @@ export default function RecordCard({
           />
           <span className={styles.checkbox} aria-hidden="true" />
         </label>
+      ) : null}
+      {onDownload ? (
+        <button
+          type="button"
+          className={styles.download}
+          onClick={onDownload}
+          aria-label={`Download ${title}`}
+          title="Download"
+        >
+          <img src={downloadIcon} alt="" width={14} height={14} />
+        </button>
       ) : null}
     </div>
   );

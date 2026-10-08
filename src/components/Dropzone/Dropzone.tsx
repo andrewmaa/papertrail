@@ -2,9 +2,9 @@ import { useEffect, useId, useRef, useState, type DragEvent } from "react";
 import uploadIcon from "../../assets/upload/upload.svg";
 import styles from "./Dropzone.module.css";
 
-const ACCEPT = ".jpg,.jpeg,.png,image/jpeg,image/png";
-const ALLOWED_EXTENSIONS = ["jpg", "jpeg", "png"];
-const ALLOWED_TYPES = new Set(["image/jpeg", "image/png", "image/jpg"]);
+const ACCEPT = ".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf";
+const ALLOWED_EXTENSIONS = ["jpg", "jpeg", "png", "pdf"];
+const ALLOWED_TYPES = new Set(["image/jpeg", "image/png", "image/jpg", "application/pdf"]);
 
 type DropzoneProps = {
   files: File[];
@@ -20,6 +20,7 @@ function isAllowed(file: File) {
 
 function extensionForType(type: string) {
   if (type === "image/png") return "png";
+  if (type === "application/pdf") return "pdf";
   return "jpg";
 }
 
@@ -119,7 +120,7 @@ export default function Dropzone({ files, onFilesChange, disabled = false }: Dro
       <h2 id={titleId} className={styles.title}>
         Drag and drop your files here
       </h2>
-      <p className={styles.hint}>or browse / paste from your computer (JPG, PNG)</p>
+      <p className={styles.hint}>or browse / paste from your computer (JPG, PNG, PDF)</p>
 
       <input
         ref={inputRef}
@@ -150,8 +151,8 @@ export default function Dropzone({ files, onFilesChange, disabled = false }: Dro
       <div aria-live="polite" className={styles.status}>
         {rejected > 0 ? (
           <p className={styles.error}>
-            {rejected === 1 ? "1 file was skipped" : `${rejected} files were skipped`} — only JPG
-            and PNG are supported.
+            {rejected === 1 ? "1 file was skipped" : `${rejected} files were skipped`} — only JPG,
+            PNG, and PDF are supported.
           </p>
         ) : null}
       </div>

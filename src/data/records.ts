@@ -42,4 +42,5 @@ export type RecordDocument = {
   language?: string;
   confidence?: string;
   sourcePreviewUrls?: string[];
+  sourcePreviewTypes?: string[];
 };

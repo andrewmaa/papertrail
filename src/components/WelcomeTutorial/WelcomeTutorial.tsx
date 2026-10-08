@@ -26,7 +26,7 @@ const STEPS: TutorialStep[] = [
     eyebrow: "Welcome",
     title: "Your filing cabinet, now in the cloud.",
     body: "Papertrail turns boxes of paper records into searchable, structured data. Here’s a quick tour of how it works.",
-    tips: ["Takes about a minute", "Revisit anytime from “Take the tour”"],
+    tips: ["Takes less than a minute", "You can always take the tour again from the home screen"],
     visual: <WelcomeVisual />,
   },
   {
@@ -47,14 +47,14 @@ const STEPS: TutorialStep[] = [
     eyebrow: "Step 3 · Find",
     title: "Search, filter, and sort in seconds.",
     body: "Use the search bar to find records by title or ID. The sidebar narrows results by document type and status, and sorts by date, page count, or name.",
-    tips: ["Combine filters to zero in fast", "Counts show how many of each type you have"],
+    tips: ["Filter and sort to find what you need", "Counts show how many of each type you have"],
     visual: <SearchVisual />,
   },
   {
     eyebrow: "Step 4 · Review",
     title: "Open a record to check the details.",
     body: "Click any card to see its extracted fields. Compare them with the original scan, correct anything that looks off, leave notes for your team, or share a link.",
-    tips: ["Edit fields inline and save", "Toggle “Original” to view the source scan"],
+    tips: ["Edit fields inline and save", "View the original scan anytime"],
     visual: <ReviewVisual />,
   },
   {

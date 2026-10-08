@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import emptyBox from "../../assets/empty-box.svg";
 import Button from "../../components/Button/Button";
 import DocumentViewer from "../../components/DocumentViewer/DocumentViewer";
@@ -9,13 +9,14 @@ import FilterSidebar, {
 } from "../../components/FilterSidebar/FilterSidebar";
 import NavBar from "../../components/NavBar/NavBar";
 import RecordCard from "../../components/RecordCard/RecordCard";
+import ToastStack, { type ToastItem } from "../../components/Toast/Toast";
 import UploadModal from "../../components/UploadModal/UploadModal";
 import WelcomeTutorial, {
   TUTORIAL_STORAGE_KEY,
 } from "../../components/WelcomeTutorial/WelcomeTutorial";
 import { type RecordDocument } from "../../data/records";
 import { apiUrl, withApiAssetUrls } from "../../lib/api";
-import { exportRecordsAsCsv } from "../../lib/exportRecords";
+import { downloadRecord, exportRecordsAsCsv } from "../../lib/exportRecords";
 import styles from "./DashboardPage.module.css";
 
 const SORT_LABELS: Record<SortOption, string> = {
@@ -44,6 +45,7 @@ export default function DashboardPage() {
   const [activeRecord, setActiveRecord] = useState<RecordDocument | null>(null);
   const [uploadOpen, setUploadOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [toasts, setToasts] = useState<ToastItem[]>([]);
   const [tutorialOpen, setTutorialOpen] = useState(() => {
     try {
       return window.localStorage.getItem(TUTORIAL_STORAGE_KEY) !== "1";
@@ -158,15 +160,55 @@ export default function DashboardPage() {
     });
   }
 
+  const dismissToast = useCallback((id: string) => {
+    setToasts((prev) => prev.filter((toast) => toast.id !== id));
+  }, []);
+
+  function showToast(toast: ToastItem) {
+    setToasts((prev) => [...prev.filter((item) => item.id !== toast.id), toast]);
+  }
+
+  function patchToast(id: string, patch: Partial<ToastItem>) {
+    setToasts((prev) => prev.map((toast) => (toast.id === id ? { ...toast, ...patch } : toast)));
+  }
+
   function addRecord(record: RecordDocument) {
     const next = withApiAssetUrls(record);
     setRecords((prev) => [next, ...prev.filter((item) => item.id !== next.id)]);
+    showToast({
+      id: next.id,
+      status: "uploading",
+      title: `Uploading ${next.title}`,
+      message: next.id,
+      progress: 0,
+    });
+  }
+
+  function markUploaded(record: RecordDocument) {
+    patchToast(record.id, {
+      status: "processing",
+      title: `Processing ${record.title}`,
+      message: "Reading the document with Claude Vision…",
+      progress: undefined,
+    });
   }
 
   function updateRecord(record: RecordDocument) {
     const next = withApiAssetUrls(record);
     setRecords((prev) => prev.map((item) => (item.id === next.id ? next : item)));
     setActiveRecord((current) => (current?.id === next.id ? next : current));
+    showToast({
+      id: next.id,
+      status: "success",
+      title: `${next.title} is digitized`,
+      message: `${next.id} · ${next.type} · ${next.pages} ${next.pages === 1 ? "page" : "pages"}`,
+      action: { label: "View record", onClick: () => setActiveRecord(next) },
+    });
+  }
+
+  function failRecord(id: string, message: string) {
+    removeRecord(id);
+    showToast({ id, status: "error", title: "Couldn’t process upload", message });
   }
 
   function removeRecord(id: string) {
@@ -361,6 +403,7 @@ export default function DashboardPage() {
                     onToggleSelect={() =>
                       setSelectedIds((prev) => toggleInSet(prev, record.id))
                     }
+                    onDownload={() => downloadRecord(record)}
                   />
                 </li>
               ))}
@@ -377,10 +420,14 @@ export default function DashboardPage() {
         <UploadModal
           onClose={() => setUploadOpen(false)}
           onProcessing={addRecord}
+          onUploadProgress={(id, progress) => patchToast(id, { progress })}
+          onUploaded={markUploaded}
           onCreated={updateRecord}
-          onFailed={removeRecord}
+          onFailed={failRecord}
         />
       ) : null}
+
+      <ToastStack toasts={toasts} onDismiss={dismissToast} />
 
       {tutorialOpen ? (
         <WelcomeTutorial

@@ -46,7 +46,13 @@ export async function initDb() {
 
 }
 
-function mapRecord(row, pageIds = []) {
+function storedMimeType(file) {
+  if (file.mimetype === "application/pdf") return "application/pdf";
+  if (file.mimetype === "image/png") return "image/png";
+  return "image/jpeg";
+}
+
+function mapRecord(row, pageIds = [], pageTypes = []) {
   return {
     id: row.id,
     type: row.type,
@@ -61,6 +67,7 @@ function mapRecord(row, pageIds = []) {
     language: row.language ?? undefined,
     confidence: row.confidence ?? undefined,
     sourcePreviewUrls: pageIds.map((pageId) => `/api/pages/${pageId}`),
+    sourcePreviewTypes: pageTypes,
   };
 }
 
@@ -70,21 +77,29 @@ export async function listRecords() {
        (SELECT json_agg(p.id ORDER BY p.page_index)
         FROM record_pages p WHERE p.record_id = r.id),
        '[]'::json
-     ) AS page_ids
+     ) AS page_ids, COALESCE(
+       (SELECT json_agg(p.mime_type ORDER BY p.page_index)
+        FROM record_pages p WHERE p.record_id = r.id),
+       '[]'::json
+     ) AS page_types
      FROM records r
      ORDER BY r.created_at DESC, r.id DESC`,
   );
-  return rows.map((row) => mapRecord(row, row.page_ids ?? []));
+  return rows.map((row) => mapRecord(row, row.page_ids ?? [], row.page_types ?? []));
 }
 
 export async function getRecordById(id) {
   const { rows } = await pool.query("SELECT * FROM records WHERE id = $1", [id]);
   if (rows.length === 0) return null;
   const pages = await pool.query(
-    "SELECT id FROM record_pages WHERE record_id = $1 ORDER BY page_index",
+    "SELECT id, mime_type FROM record_pages WHERE record_id = $1 ORDER BY page_index",
     [id],
   );
-  return mapRecord(rows[0], pages.rows.map((p) => p.id));
+  return mapRecord(
+    rows[0],
+    pages.rows.map((p) => p.id),
+    pages.rows.map((p) => p.mime_type),
+  );
 }
 
 export async function getPageById(id) {
@@ -132,7 +147,7 @@ export async function insertRecordWithPages(record, files) {
           pageId,
           record.id,
           i,
-          file.mimetype === "image/png" ? "image/png" : "image/jpeg",
+          storedMimeType(file),
           file.originalname ?? null,
           file.buffer,
         ],
@@ -143,6 +158,7 @@ export async function insertRecordWithPages(record, files) {
     return {
       ...record,
       sourcePreviewUrls: pageIds.map((pageId) => `/api/pages/${pageId}`),
+      sourcePreviewTypes: files.map(storedMimeType),
     };
   } catch (error) {
     await client.query("ROLLBACK");

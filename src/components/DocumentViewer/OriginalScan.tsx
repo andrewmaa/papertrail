@@ -9,7 +9,9 @@ type OriginalScanProps = {
 const FILLER_LINES = [92, 86, 95, 70, 88, 93, 64, 90, 78, 84, 58];
 
 export default function OriginalScan({ record }: OriginalScanProps) {
-  const previews = record.sourcePreviewUrls?.filter(Boolean) ?? [];
+  const previews = (record.sourcePreviewUrls ?? [])
+    .map((url, index) => ({ url, type: record.sourcePreviewTypes?.[index] }))
+    .filter((preview) => Boolean(preview.url));
   const hasUpload = previews.length > 0;
   const [page, setPage] = useState(1);
   const total = hasUpload ? previews.length : Math.max(record.pages, 1);
@@ -23,11 +25,19 @@ export default function OriginalScan({ record }: OriginalScanProps) {
       >
         {hasUpload && currentPreview ? (
           <div className={styles.uploadFrame}>
-            <img
-              src={currentPreview}
-              alt={`Uploaded original for ${record.title}, page ${page}`}
-              className={styles.uploadImage}
-            />
+            {currentPreview.type === "application/pdf" ? (
+              <iframe
+                src={currentPreview.url}
+                title={`Uploaded PDF original for ${record.title}, file ${page}`}
+                className={styles.uploadPdf}
+              />
+            ) : (
+              <img
+                src={currentPreview.url}
+                alt={`Uploaded original for ${record.title}, page ${page}`}
+                className={styles.uploadImage}
+              />
+            )}
           </div>
         ) : (
           <div className={styles.paper}>

@@ -4,7 +4,7 @@ import Dropzone from "../Dropzone/Dropzone";
 import LanguageCard from "../LanguageCard/LanguageCard";
 import OutputOptions, { type OutputPreference } from "../OutputOptions/OutputOptions";
 import type { RecordDocument } from "../../data/records";
-import { apiUrl } from "../../lib/api";
+import { apiUrl, postFormWithProgress } from "../../lib/api";
 import styles from "./UploadModal.module.css";
 
 const CLOSE_DURATION_MS = 280;
@@ -12,8 +12,10 @@ const CLOSE_DURATION_MS = 280;
 type UploadModalProps = {
   onClose: () => void;
   onProcessing: (record: RecordDocument) => void;
+  onUploadProgress?: (id: string, fraction: number) => void;
+  onUploaded?: (record: RecordDocument) => void;
   onCreated: (record: RecordDocument) => void;
-  onFailed: (id: string) => void;
+  onFailed: (id: string, message: string) => void;
 };
 
 type DetectedLanguage = {
@@ -49,6 +51,8 @@ function fileFingerprint(file: File) {
 export default function UploadModal({
   onClose,
   onProcessing,
+  onUploadProgress,
+  onUploaded,
   onCreated,
   onFailed,
 }: UploadModalProps) {
@@ -59,7 +63,6 @@ export default function UploadModal({
   const [files, setFiles] = useState<File[]>([]);
   const [preference, setPreference] = useState<OutputPreference>("english");
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [detecting, setDetecting] = useState(false);
   const [detectError, setDetectError] = useState<string | null>(null);
   const [detected, setDetected] = useState<DetectedLanguage | null>(null);
@@ -182,12 +185,12 @@ export default function UploadModal({
 
   async function handleCreate() {
     if (files.length === 0 || submittingRef.current) return;
-    setError(null);
     submittingRef.current = true;
     setSubmitting(true);
 
     const pending = placeholderRecord(files, documentId);
     onProcessing(pending);
+    requestClose(true);
 
     const body = new FormData();
     for (const file of files) body.append("files", file);
@@ -195,11 +198,11 @@ export default function UploadModal({
     body.append("recordId", documentId);
 
     try {
-      const response = await fetch(apiUrl("/api/process"), {
-        method: "POST",
-        body,
+      const response = await postFormWithProgress("/api/process", body, {
+        onProgress: (fraction) => onUploadProgress?.(pending.id, fraction),
+        onUploaded: () => onUploaded?.(pending),
       });
-      const raw = await response.text();
+      const raw = response.text;
       let payload: RecordDocument & { error?: string };
       try {
         payload = JSON.parse(raw) as RecordDocument & { error?: string };
@@ -219,14 +222,8 @@ export default function UploadModal({
         confidence: payload.confidence ?? detected?.confidence,
       };
       onCreated(digitized);
-      submittingRef.current = false;
-      setSubmitting(false);
-      requestClose(true);
     } catch (err) {
-      onFailed(pending.id);
-      setError(err instanceof Error ? err.message : "Processing failed");
-      submittingRef.current = false;
-      setSubmitting(false);
+      onFailed(pending.id, err instanceof Error ? err.message : "Processing failed");
     }
   }
 
@@ -275,11 +272,6 @@ export default function UploadModal({
               ) : null}
               <OutputOptions value={preference} onChange={setPreference} />
             </>
-          ) : null}
-          {error ? (
-            <p className={styles.error} role="alert">
-              {error}
-            </p>
           ) : null}
         </div>
 

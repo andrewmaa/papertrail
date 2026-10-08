@@ -39,8 +39,10 @@ const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024, files: 8 },
   fileFilter(_req, file, cb) {
-    const ok = ["image/jpeg", "image/png", "image/jpg"].includes(file.mimetype);
-    cb(ok ? null : new Error("Only JPG and PNG images are supported"), ok);
+    const ok = ["image/jpeg", "image/png", "image/jpg", "application/pdf"].includes(
+      file.mimetype,
+    );
+    cb(ok ? null : new Error("Only JPG, PNG, and PDF files are supported"), ok);
   },
 });
 
@@ -64,9 +66,22 @@ function nextRecordId() {
   return `PT-${n}`;
 }
 
-function mediaTypeFor(file) {
-  if (file.mimetype === "image/png") return "image/png";
-  return "image/jpeg";
+function contentBlockFor(file) {
+  const data = file.buffer.toString("base64");
+  if (file.mimetype === "application/pdf") {
+    return {
+      type: "document",
+      source: { type: "base64", media_type: "application/pdf", data },
+    };
+  }
+  return {
+    type: "image",
+    source: {
+      type: "base64",
+      media_type: file.mimetype === "image/png" ? "image/png" : "image/jpeg",
+      data,
+    },
+  };
 }
 
 function extractJson(text) {
@@ -87,7 +102,7 @@ function buildPrompt(preference) {
         : "Translate field values to English when the document is not already in English.";
 
   return `You are digitizing a scanned paper document for an archive system called Papertrail.
-Analyze the attached image(s) of the same document (pages in order) and extract structured metadata.
+Analyze the attached image(s) and/or PDF(s) of the same document (pages in order) and extract structured metadata.
 
 ${preferenceHint}
 
@@ -104,7 +119,7 @@ Respond with ONLY a JSON object (no markdown) matching this shape:
 Rules:
 - Pick the closest type from the allowed enum.
 - Extract 3-8 of the most useful label/value fields (parties, dates, amounts, ids, etc.).
-- pages should equal how many page images you received (or a best estimate from content).
+- pages should equal the total page count: every page of each PDF plus one per image (or a best estimate from content).
 - If something is illegible, use an empty string for that value.`;
 }
 
@@ -162,11 +177,14 @@ app.get("/api/pages/:id", async (req, res) => {
     if (!page) return res.status(404).json({ error: "Page not found" });
     res.setHeader("Content-Type", page.mime_type);
     res.setHeader("Cache-Control", "private, max-age=3600");
+    const disposition = req.query.download != null ? "attachment" : "inline";
     if (page.filename) {
       res.setHeader(
         "Content-Disposition",
-        `inline; filename="${String(page.filename).replace(/"/g, "")}"`,
+        `${disposition}; filename="${String(page.filename).replace(/"/g, "")}"`,
       );
+    } else if (disposition === "attachment") {
+      res.setHeader("Content-Disposition", "attachment");
     }
     res.send(page.data);
   } catch (error) {
@@ -190,7 +208,7 @@ app.post("/api/detect-language", (req, res) => {
 
       const file = req.file;
       if (!file) {
-        return res.status(400).json({ error: "An image file is required" });
+        return res.status(400).json({ error: "A file is required" });
       }
 
       const message = await anthropic.messages.create({
@@ -200,14 +218,7 @@ app.post("/api/detect-language", (req, res) => {
           {
             role: "user",
             content: [
-              {
-                type: "image",
-                source: {
-                  type: "base64",
-                  media_type: mediaTypeFor(file),
-                  data: file.buffer.toString("base64"),
-                },
-              },
+              contentBlockFor(file),
               {
                 type: "text",
                 text: `Detect the primary written language on this scanned document page.
@@ -261,7 +272,7 @@ app.post("/api/process", (req, res) => {
 
       const files = req.files ?? [];
       if (files.length === 0) {
-        return res.status(400).json({ error: "At least one image file is required" });
+        return res.status(400).json({ error: "At least one file is required" });
       }
 
       const preference = ["english", "native", "both"].includes(req.body?.preference)
@@ -273,14 +284,7 @@ app.post("/api/process", (req, res) => {
           ? req.body.recordId
           : nextRecordId();
 
-      const imageBlocks = files.map((file) => ({
-        type: "image",
-        source: {
-          type: "base64",
-          media_type: mediaTypeFor(file),
-          data: file.buffer.toString("base64"),
-        },
-      }));
+      const fileBlocks = files.map(contentBlockFor);
 
       const message = await anthropic.messages.create({
         model: "claude-haiku-4-5",
@@ -288,7 +292,7 @@ app.post("/api/process", (req, res) => {
         messages: [
           {
             role: "user",
-            content: [...imageBlocks, { type: "text", text: buildPrompt(preference) }],
+            content: [...fileBlocks, { type: "text", text: buildPrompt(preference) }],
           },
         ],
       });

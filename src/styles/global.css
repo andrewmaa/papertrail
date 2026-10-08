@@ -66,8 +66,8 @@ body {
   color: var(--color-ink);
   background-color: var(--color-canvas);
   background-image: radial-gradient(var(--color-dot) 1.4px, transparent 1.8px);
-  background-size: 30px 30px;
-  background-position: 15px 15px;
+  background-size: 26px 26px;
+  background-position: 13px 13px;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -80,8 +80,8 @@ body::before {
   z-index: -1;
   pointer-events: none;
   background-image: radial-gradient(var(--color-dot-active) 1.8px, transparent 2.3px);
-  background-size: 30px 30px;
-  background-position: 15px calc(15px - var(--spotlight-scroll-y, 0px));
+  background-size: 26px 26px;
+  background-position: 13px calc(13px - var(--spotlight-scroll-y, 0px));
   -webkit-mask-image: radial-gradient(
     180px circle at var(--spotlight-x, -999px) var(--spotlight-y, -999px),
     #000 0%,
